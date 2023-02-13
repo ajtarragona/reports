@@ -1,0 +1,36 @@
+{
+    "name": "ajtarragona/reports",
+    "description": "Package per fer reports PDF",
+    "keywords" : ["laravel5","laravel","reports","pdf"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Txomin Medrano Martorell",
+            "email": "tmedrano@tarragona.cat"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.0.0",
+        "laravel/framework": "^6.0",
+        "barryvdh/laravel-dompdf": "^0.8.3",
+        "daltcore/lara-pdf-merger": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ajtarragona\\Reports\\": "./src",
+            "Reports\\": "storage/app/reports/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ajtarragona\\Reports\\ReportsServiceProvider"
+            ],
+            "aliases": {
+                "Reports" : "Ajtarragona\\Reports\\Facades\\Reports"
+            }
+        }
+    }
+}

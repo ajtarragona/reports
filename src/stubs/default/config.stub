@@ -1,0 +1,8 @@
+<?php
+
+    return [
+        "short_name"=>"_REPORT_SLUG_",
+        "name"=>"_REPORT_NAME_",
+        "orientations"=> ["portrait", "landscape"],
+        "pagesizes"=> ["A4", "A3"],
+    ];

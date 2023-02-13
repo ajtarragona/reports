@@ -1,0 +1,19 @@
+@extends('reports::layout/pdf-master')
+
+@section('title')
+	_REPORT_NAME_
+@endsection
+
+@section('subtitle')
+
+@endsection
+
+@section('body')
+
+	<div class="page">
+
+		START HERE
+
+    </div>
+@endsection
+
