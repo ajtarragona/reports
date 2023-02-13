@@ -19,9 +19,9 @@ class ReportsController extends Controller
 
         if($report_name){
             $current_report = $repo->find($report_name) ;
-            $pagesizes=$current_report->getPagesizes();
-            $orientations=$current_report->getOrientations();
-            $languages=$current_report->getLanguages();
+            $pagesizes=$current_report->getPagesizesCombo();
+            $orientations=$current_report->getOrientationsCombo();
+            $languages=$current_report->getLanguagesCombo();
             $parameters=$current_report->getTemplateParameters();
             $args=array_merge($args, compact('current_report','pagesizes','orientations','languages','parameters'));
         }
@@ -32,15 +32,8 @@ class ReportsController extends Controller
     }
 
     
-    public function preview($report_name, Request $request, ReportsService $repo){
-        // dd($request->all());
-        // if($request->submit_action=="clear"){
-        //     $repo->clearSession($report_name);
-            
-        // }else{
-        //     $repo->setSession($report_name, $request->except(['_token','submit_action']));
-        // }
-        
+    public function generate($report_name, Request $request, ReportsService $repo){
+        //  dd($request->all());
         $report=$repo->find($report_name);
         // dd($report);
         $parameters=$request->except(['_token','submit_action']);
@@ -53,14 +46,4 @@ class ReportsController extends Controller
 
    
     
-
-    public function generate($report_name, Request $request, ReportsService $repo){
-        $report_parameters=$repo->getSession($report_name);
-
-// dd( $report_parameters);
-        $report=$repo->find($report_name);
-        $parameters=$report->templatePreviewParameters($report_parameters);
-        // dd($parameters);
-        return $report->download($parameters);
-    }
 }

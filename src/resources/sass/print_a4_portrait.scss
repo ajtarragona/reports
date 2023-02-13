@@ -1,0 +1,29 @@
+
+// $pdf-page-width: 786px; //ajusto un poco
+// $pdf-page-height: 1123px;
+
+// $pdf-header-height: 100px;
+// $pdf-footer-height: 80px;
+
+// $pdf-margin-top: $pdf-page-margin-lg;
+// $pdf-margin-bottom: $pdf-page-margin-lg;
+// $pdf-margin-left: $pdf-page-margin-lg;
+// $pdf-margin-right: $pdf-page-margin-lg;
+
+
+$page-sizes: (
+    'A5' : (
+        'width' : 559px,
+        'height' : 793px
+    ),
+    'A4' : (
+        'width' : 793px,
+        'height' : 1123px
+    ),
+    'A3' : (
+        'width' : 1123px,
+        'height' : 1587px
+    )
+)
+
+

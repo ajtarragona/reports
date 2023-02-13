@@ -1,0 +1,113 @@
+
+.fullwidth{
+	width:100%;
+	height:auto;
+}
+
+.text-left{	text-align:left;}
+.text-center{	text-align:center;}
+.text-right{	text-align:right;}
+.text-justify{	text-align:justify;}
+
+
+
+$font-size-xs : 6pt;
+$font-size-sm : 9pt;
+$font-size-md : 11pt;
+$font-size-lg : 14pt;
+$font-size-xl : 18pt;
+$font-size-xxl : 22pt;
+
+$font-sizes : (
+	'xs' : $font-size-xs,
+	'sm' : $font-size-sm,
+	'md' : $font-size-md,
+	'lg' : $font-size-lg,
+	'xl' : $font-size-xl,
+	'xxl': $font-size-xxl
+);
+
+
+@each $key,$font-size in $font-sizes {
+	.text-#{$key} { font-size:$font-size; }
+	p.text-#{$key} { 
+        font-size:$font-size;
+        margin-bottom: $font-size + (1/4*$font-size);
+     }
+}
+
+$margin-0 : 0px;
+$margin-1 : 5px;
+$margin-2 : 15px;
+$margin-3 : 25px;
+$margin-4 : 45px;
+$margin-5 : 80px;
+
+
+$margins : (
+	'0': $margin-0, 
+	'1' : $margin-1,
+	'2' : $margin-2,
+	'3' : $margin-3,
+	'4' : $margin-4,
+	'5' : $margin-5
+);
+
+/* margins */
+@each $key,$margin in $margins {
+    .m-#{$key} { margin:        $margin  }
+    .mt-#{$key} { margin-top:    $margin  }
+    .mr-#{$key} { margin-right:  $margin  }
+    .mb-#{$key} { margin-bottom: $margin  }
+    .ml-#{$key} { margin-left:   $margin  }
+    .mx-#{$key} { margin-right:  $margin;  margin-left:   $margin  }
+    .my-#{$key} { margin-top:    $margin;  margin-bottom: $margin  }
+}
+
+/* paddings */
+@each $key,$margin in $margins {
+    .p-#{$key} { padding:        $margin  }
+    .pt-#{$key} { padding-top:    $margin  }
+    .pr-#{$key} { padding-right:  $margin  }
+    .pb-#{$key} { padding-bottom: $margin  }
+    .pl-#{$key} { padding-left:   $margin  }
+    .px-#{$key} { padding-right:  $margin;  padding-left:   $margin  }
+    .py-#{$key} { padding-top:    $margin;  padding-bottom: $margin  }
+}
+
+
+/*borders*/
+
+
+.b-solid{ 	border-style:solid; }
+.b-dotted{ 	border-style:dotted; }
+.b-dashed{ 	border-style:dashed; }
+
+$border-0 : 0px;
+$border-1 : 1px;
+$border-2 : 2px;
+$border-3 : 3px;
+$border-4 : 4px;
+$border-5 : 5px;
+
+
+$borders : (
+	'0': $border-0, 
+	'1' : $border-1,
+	'2' : $border-2,
+	'3' : $border-3,
+	'4' : $border-4,
+	'5' : $border-5
+);
+
+@each $key,$border in $borders {
+
+    .b-#{$key} { border-width: $border  }
+    .b-a-#{$key} { border-width: $border  }
+    .b-t-#{$key} { border-top-width:  $border }
+    .b-r-#{$key} { border-right-width:   $border    }
+    .b-b-#{$key} { border-bottom-width:  $border  }
+    .b-l-#{$key} { border-left-width:   $border}
+    .b-x-#{$key} { border-left-width:  $border ;  border-right-width:  $border }
+    .b-y-#{$key} { border-top-width: $border ;  border-bottom-width:  $border  }
+}

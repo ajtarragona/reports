@@ -22,10 +22,11 @@ class BaseReport
     public $orientation="portrait";
     public $margin="lg";
     public $pagination=true;
-   
-    public $entities=null;
 
-    public $template_name="template";
+   
+    protected $entities=null;
+
+    protected $template_name="template";
     
     protected $prepend = [];
     protected $append = [];
@@ -117,6 +118,10 @@ class BaseReport
         return $value;
     }
 
+
+    /**
+     * Inicializa los parametros que se le pasarán a la vista previa
+     */
     public function templatePreviewParameters($values=[]){
         $parameters= $this->getTemplateParameters();
         // dd($parameters, $values);
@@ -141,15 +146,11 @@ class BaseReport
 
         if($this->pagination) $ret['pagination'] = true;
         $ret['margin'] = $this->margin;
+
         // dd($ret);
         return $ret;
     }
 
-
-
-    public function getSessionParameter($parameter_name){
-        return tgn_reports()->getSession($this->short_name, $parameter_name);
-    }
 
 
     /** 
@@ -190,23 +191,45 @@ class BaseReport
         return $ret;
     }
 
-    public function renderPreview($parameters=[]){
-        // dd($parameters);
-        $parameters=$this->templatePreviewParameters($parameters);
-        // dd($parameters);
-        return $this->view($this->templateName(), $parameters );
-    }
+   
+    
 
 
     public function getPagesizes(){
         return $this->config('pagesizes', []);
     }
+    public function getPagesizesCombo(){
+        $ret=[];
+        foreach($this->getPagesizes() as $pagesize){
+            $ret[$pagesize] = __('tgn-reports::reports.pagesizes.'.$pagesize);
+        }
+        return $ret;
+    }
+
+    
 
     public function getOrientations(){
         return $this->config('orientations', []);
     }
+
+    public function getOrientationsCombo(){
+        $ret=[];
+        foreach($this->getOrientations() as $o){
+            $ret[$o] = __('tgn-reports::reports.orientations.'.$o);
+        }
+        return $ret;
+    }
+
     public function getLanguages(){
         return $this->config('languages', []);
+    }
+
+    public function getLanguagesCombo(){
+        $ret=[];
+        foreach($this->getLanguages() as $o){
+            $ret[$o] = __('tgn-reports::reports.languages.'.$o);
+        }
+        return $ret;
     }
 
 
@@ -354,7 +377,7 @@ class BaseReport
                 }
             
             }catch(Exception $e){
-                dd($e);
+                // dd($e);
             }
         
     }

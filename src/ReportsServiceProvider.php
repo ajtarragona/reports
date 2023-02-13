@@ -25,6 +25,13 @@ class ReportsServiceProvider extends ServiceProvider
         //cargo rutas
         $this->loadRoutesFrom(__DIR__.'/routes.php');
 
+        //idiomas
+        $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'tgn-reports');
+
+        $this->publishes([
+            __DIR__.'/resources/lang' => resource_path('lang/vendor/ajtarragona-reports'),
+        ], 'ajtarragona-reports-translations');
+
 
         //publico configuracion
         $config = __DIR__.'/Config/reports.php';

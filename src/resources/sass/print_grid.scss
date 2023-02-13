@@ -1,0 +1,32 @@
+$grid-columns : 12;
+
+$page-sizes: (
+    'A5' : (
+        'width' : 559px,
+        'height' : 793px
+    ),
+    'A4' : (
+        'width' : 793px,
+        'height' : 1123px
+    ),
+    'A3' : (
+        'width' : 1123px,
+        'height' : 1587px
+    )
+);
+
+
+@each $page-key,$page-size in $page-sizes {
+     /*PAGE SIZE #{$page-key}*/
+    @each $margin-key,$page-margin in $page-margins {
+        /*margin #{$margin-key} : #{$page-margin}*/
+        
+        @for $i from 1 through $grid-columns {
+            
+            body.orientation-portrait.margin-#{$margin-key}.size-#{$page-key} .col-#{$i} { width: $i *  ( ( map.get($page-size, 'width') - ( 2 * $page-margin ) ) / $grid-columns ) ; }
+            body.orientation-landscape.margin-#{$margin-key}.size-#{$page-key} .col-#{$i} { width: $i *  ( ( map.get($page-size, 'height') - ( 2 * $page-margin ) ) / $grid-columns ) ; }
+        }
+    }
+         
+    
+}

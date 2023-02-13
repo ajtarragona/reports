@@ -20,11 +20,28 @@ Afegir classloading a  `composer.json`
 
 ```
 
+Publicar estils del backend i dels reports PDF.
+```
+php artisan ajtarragona:reports:prepare
+```
+
+Publicar config dompdf
+```
+php artisan vendor:publish --provider="Barryvdh\DomPDF\ServiceProvider"
+```
+activar `enable_php` a l'arxiu `config/dompdf.php`
+
 ## Create a new report
 Disposem de la comanda:
 ```
 php artisan make:censat-report {report_name}
 ```
+
+Això ens crearà un nou report amb el nom  `report_name` a la carpeta `storage/app/reports`.
+Es crearan 3 arxius:
+- config.php
+- NomReportReport.php
+- template.blade.php
 
 ## Backend
  Podem activar el backend afegint la variable `REPORTS_BACKEND = true` a l'arxiu `.env`

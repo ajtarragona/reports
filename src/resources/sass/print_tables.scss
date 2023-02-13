@@ -1,0 +1,132 @@
+
+
+table{
+	font-size:$font-size-md;
+	border-spacing: 0;
+    border-collapse: collapse;	
+
+	// width:100%;
+	&.table{
+		border-spacing: 0;
+	    border-collapse: collapse;
+		
+		thead th{
+			font-weight: bold;
+			//font-size:10pt;
+			padding:0px;
+			border-top:1px solid $borders-color;
+			border-bottom:2px solid $borders-color;
+			>div{
+				padding:10px 8px;
+			}
+		}
+
+		tbody tr{
+		
+		}
+		
+		tbody td,
+		tbody th{
+			vertical-align:top;
+			padding:0px;
+			border-bottom:1px solid $borders-color;
+			
+			>div{
+				padding:10px 8px;
+			}
+		}
+
+		&.table-display{
+			thead th{
+				font-weight: bold;
+				font-style:italic;
+				border-top:2px solid #333;
+				border-bottom:1px solid $borders-color;
+			}
+			
+			thead th{
+				font-weight: bold;
+				font-style:italic;
+				border-top:2px solid #333;
+				border-bottom:1px solid $borders-color;
+			}
+
+			tbody th{
+				background-color: $muted;
+				border-bottom:1px solid $borders-color;
+				font-weight: bold;
+			}
+
+			tbody td{
+				border-bottom:1px solid $borders-color;
+
+				&:last-child{
+					border-right-width:0px;				
+				}
+			}
+
+			tbody td.title{
+				font-weight: bold;
+			}
+
+		}
+		&.table-bordered{
+			border:1px solid $borders-color;
+
+			thead th{
+				font-weight: bold;
+				font-style:italic;
+				// border-top:1px solid #333;
+				border-right:1px solid $borders-color;
+				border-bottom:1px solid $borders-color;
+			}
+
+			tbody th{
+				background-color: $muted;
+				border-bottom:1px solid $borders-color;
+				border-right:1px solid $borders-color;
+				font-weight: bold;
+			}
+
+			tbody td{
+				border-bottom:1px solid $borders-color;
+				border-right:1px solid $borders-color;
+
+				&:last-child{
+					border-right-width:0px;				
+				}
+			}
+
+			tbody td.title{
+				font-weight: bold;
+			}
+		}
+
+		&.table-compact{
+			thead th,
+			thead td,
+			tbody td,
+			tbody th{
+				>div{
+					padding:5px 5px;
+				}
+			}
+		}
+
+
+	}
+
+	&.borderless{
+
+		border-width: 0px  !important; 
+		border-style: none !important;
+		border-color:transparent  !important;
+		td,th{
+			border-width: 0px  !important;
+			border-style: none  !important;
+			border-color:transparent  !important;
+		
+
+		}
+	}
+}

@@ -1,11 +1,11 @@
 <li class="list-group-item p-0 ">
                                     
     <div class="form-floating ">
-        <select class="form-select border-0" name="{{$parameter_name}}" id="parameter-{{$parameter_name}}">
-            @foreach($parameter["options"] as $key=>$value)
-                <option value="{{$key}}" {{ ( ($report_parameters[$parameter_name] ?? null)  == $key) ? 'selected':''}} >{{$value}}</option>
+        <select class="form-select border-0" name="{{$name}}" id="parameter-{{$name}}">
+            @foreach($options as $key=>$val)
+                <option value="{{$key}}" {{ ( $value  == $key) ? 'selected':''}} >{{$val}}</option>
             @endforeach
         </select>
-        <label for="language-select" >{{$parameter["label"]}}</small>
+        <label for="parameter-{{$name}}" >{{ $label }}</label>
     </div>
 </li>

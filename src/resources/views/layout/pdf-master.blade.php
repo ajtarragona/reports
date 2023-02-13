@@ -31,21 +31,29 @@
 		</table>
 	</header>
 
+		
+	<footer>
+		<table class="fullwidth">
+			<tbody>
+				<tr>
+					<td>
+						<div class="content">
+							@yield('footer') 
+						</div>
+					</td>
+					<td class=" text-right" >
+						@if(isset($pagination) && $pagination)
+							@include('tgn-reports::layout._pdf-pagination')
+						@endif
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</footer>
 	
 	<main>
 		@yield('body')
 	</main>
-		
 	
-	<footer>
-		<div class="content">
-			@yield('footer') 
-		</div>
-		
-		@if(isset($pagination) && $pagination)
-			@include('tgn-reports::layout._pdf-pagination');
-		@endif
-		
-	</footer>
 
 </body>

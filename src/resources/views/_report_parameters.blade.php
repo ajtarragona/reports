@@ -1,7 +1,7 @@
 
 
 {{-- @dump($report_parameters) --}}
-<form method="post" action="{{ route('tgn-reports.preview',$report->short_name)}}" target="report-preview"> 
+<form method="post" action="{{ route('tgn-reports.generate',$report->short_name)}}" target="report-preview"> 
     @csrf
     <div class="card mt-3 mb-3">
         <div class="card-header d-flex justify-content-between align-items-center pe-2">
@@ -24,60 +24,53 @@
             <ul class="list-group list-group-flush">
                 @if($pagesizes)
                     @if(count($pagesizes)>1)
-                        <li class="list-group-item p-0">
-                            <div class="form-floating ">
-                                
-                                <select class="form-select border-0" id="pagesize-select" name="pagesize">
-                                    @foreach($pagesizes as $pagesize)
-                                        <option value="{{$pagesize}}" {{ ( ($report_parameters['pagesize'] ?? null)  == $pagesize) ? 'selected':''}} >{{$pagesize}}</option>
-                                    @endforeach
-                                </select>
-                                <label for="pagesize-select" >Pagesize</small>
-                                
-                            </div>
-                            
-                        </li>
+                    
+                        @include('tgn-reports::_report_parameter-select',[
+                            'name'=>'pagesize',
+                            'options'=> $pagesizes,
+                            'value'=>$report_parameters['pagesize'] ?? null,
+                            'label'=> 'Pagesize'
+                        ])
+                    
                     @endif
                 @endif
 
                 @if($orientations)
                     @if(count($orientations)>1)
-                        <li class="list-group-item p-0">
-                            <div class="form-floating ">
-                                
-                                <select class="form-select border-0" id="orientation-select" name="orientation">
-                                    @foreach($orientations as $orientation)
-                                        <option value="{{$orientation}}" {{ ( ($report_parameters['orientation'] ?? null)  == $orientation) ? 'selected':''}}  >{{$orientation}}</option>
-                                    @endforeach
-                                </select>
-                                <label for="orientation-select" >Orientation</small>
-                                
-                            </div>
+                        
+                            @include('tgn-reports::_report_parameter-select',[
+                                'name'=>'orientation',
+                                'options'=> $orientations,
+                                'value'=>$report_parameters['orientation'] ?? null,
+                                'label'=> 'Orientation'
+                            ])
+
                             
-                        </li>
+                          
                     @endif
                 @endif
 
                 @if($languages)
                     @if(count($languages)>1)
-                        <li class="list-group-item p-0">
-                            <div class="form-floating ">
-                                
-                                <select class="form-select border-0" id="language-select" name="language">
-                                    @foreach($languages as $language)
-                                        <option value="{{$language}}" {{ ( ($report_parameters['language'] ?? null)  == $language) ? 'selected':''}} >{{$language}}</option>
-                                    @endforeach
-                                </select>
-                                <label for="language-select" >Language</small>
-                                
-                            </div>
-                            
-                        </li>
+                    
+                            @include('tgn-reports::_report_parameter-select',[
+                                'name'=>'language',
+                                'options'=> $languages,
+                                'value'=>$report_parameters['language'] ?? null,
+                                'label'=> 'Language'
+                            ])
+                               
+                             
                     @endif
                 @endif
                 @if($parameters)
                     @foreach($parameters as $parameter_name=>$parameter)
-                        @includeFirst(['tgn-reports::_report_parameter-'.$parameter["type"], 'tgn-reports::_report_parameter-text'])
+                        @includeFirst(['tgn-reports::_report_parameter-'.$parameter["type"], 'tgn-reports::_report_parameter-text'],[
+                            'name'=>$parameter_name,
+                            'options'=> $parameter["options"] ?? null,
+                            'value'=>$report_parameters[$parameter_name] ?? null,
+                            'label'=> $parameter["label"]
+                        ])
                     @endforeach
                  @endif
             </ul>
