@@ -1,0 +1,42 @@
+<?php
+
+namespace Reports\_REPORT_CLASS_NAME_;
+
+use Ajtarragona\Reports\Models\BaseReport;
+use Ajtarragona\Reports\Traits\MultipleReport;
+
+class _REPORT_CLASS_NAME_ extends BaseReport{
+
+    public $short_name = "_REPORT_SLUG_";
+    public $name = "_REPORT_NAME_";
+
+    use MultipleReport;
+
+    
+    /**
+     * columns
+     *
+     * @return array
+     */
+    public function columns(){
+        return [
+            [
+                "name"=>"col1",
+                "label"=>"Columna 1"
+            ],
+            [
+                "name"=>"col2",
+                "label"=>"Columna 2"
+            ]
+        ];
+    }
+    
+    /**
+     * rows
+     *
+     * @return Collection
+     */
+    public function rows(){
+        
+    }
+}

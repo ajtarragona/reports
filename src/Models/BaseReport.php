@@ -9,6 +9,9 @@ use PDF;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Storage;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Faker\Generator as Faker;
+use Faker\Factory as FakerFactory;
 
 class BaseReport
 {
@@ -31,11 +34,10 @@ class BaseReport
     protected $template_name="template";
     protected $template_extension=".blade.php";
     
-    protected $prepend = [];
-    protected $append = [];
-
+    
     protected $engine = "dompdf";
 
+    protected $protected_tags = ["num_rows","table_body","columns","rows","column_key","column_label","column_value"];
 
     
     protected $config = [];
@@ -141,34 +143,52 @@ class BaseReport
     
     
     public function getTemplateParameters(){
-
+        
+            
         //autodetected parameters
-        $path=$this->getTemplatePath();
-        // dd($path);
+        $paths=[$this->getTemplatePath()];
+        if($this->multiple){
+            $paths=array_merge([
+                $this->getPath().DIRECTORY_SEPARATOR.'footer'.$this->template_extension,
+                $this->getPath().DIRECTORY_SEPARATOR.'header'.$this->template_extension,
+                $this->getPath().DIRECTORY_SEPARATOR.'row'.$this->template_extension
+            ], $paths );
+        }
+        // dd($paths);
         $parameters=[];
-        if(file_exists($path)){
-            $content=file_get_contents($path);
+        foreach($paths as $path){
+            $template_parameters=[];
+        
+            if(file_exists($path)){
+                $content=file_get_contents($path);
+                // dump($content);
+                preg_match_all('/\$[0-9a-zA-Z_]+/', $content, $matches);
+                // dump($matches);
+                if($matches && is_array($matches[0])){
+                    $template_parameters=array_map(function($item){
+                        return trim($item,'$');
+                    }, $matches[0]);
+                    // dump($template_parameters);
+                    $template_parameters=array_diff($template_parameters, $this->protected_tags);
+                    // dump($template_parameters);
+                }
+                // return $matches);
 
-            preg_match_all('/\$[0-9a-zA-Z_]+/', $content, $matches);
-
-            if($matches && is_array($matches[0])){
-                $parameters=array_map(function($item){
-                    return trim($item,'$');
-                }, $matches[0]);
+                if($template_parameters) $parameters=array_merge($parameters, $template_parameters);
             }
-            // return $matches);
-
             
         }
-        $auto = array_unique($parameters);
+        $parameters = array_unique($parameters);
+        // dump($parameters);
         $ret=$this->parameters;
-        foreach($auto as $key){
+        foreach($parameters as $key){
             if(!in_array($key, array_keys($this->parameters))){
                 $ret[$key] = ["type"=>"text","label"=>$key ];
             }
         }
+        // dd($ret);
         return $ret;
-       
+        
 
     }
 
@@ -192,6 +212,15 @@ class BaseReport
     }
 
 
+    protected function applyValue($value, $parameter){
+        if(Str::startsWith($value,"@")){
+            $value=apply_value($value);
+        }else{
+            if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
+        }
+
+        return $value;
+    }
     /**
      * Inicializa los parametros que se le pasarán a la vista previa
      */
@@ -214,7 +243,7 @@ class BaseReport
             if($parameter["type"]!="boolean"){
                 $value=$values[$parameter_name]??null;
                 if(!is_null($value)){
-                    if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
+                    $value=$this->applyValue($value, $parameter);
                     $ret[$parameter_name] = $value ;
                 }else{
                     $ret[$parameter_name] ="<code>".strtoupper($parameter_name)."</code>";
@@ -326,16 +355,10 @@ class BaseReport
      * General el PDF
      * Streamea el archivo
      */
-    public function stream($request=[]){
-        $pdf=$this->doGenerate($request);
+    public function stream($request=[], $rows=null){
+        $pdf=$this->doGenerate($request, $rows);
+        return $pdf->stream();
         
-        if($this->prepend || $this->append){
-            $now = $this->randomfilename();
-
-            return $pdf->save($now.".pdf", "browser");
-        }else{
-            return $pdf->stream();
-        }
     }
 
 
@@ -343,17 +366,9 @@ class BaseReport
      * General el PDF
      * descarga el archivo
      */
-    public function download($request=[]){
-        $pdf=$this->doGenerate($request);
-       
-        if($this->prepend || $this->append){
-            $now = $this->randomfilename();
-                
-            return $pdf->save($now.".pdf", "download");
-        }else{
-            return $pdf->download();
-        }
-        
+    public function download($request=[], $rows=null){
+        $pdf=$this->doGenerate($request, $rows);
+        return $pdf->download();
     }
 
 
@@ -361,22 +376,14 @@ class BaseReport
      * General el PDF
      * Devuelve el contenido binario
      */
-    public function generate($request=[]){
-        $pdf=$this->doGenerate($request);
-    
-        if($this->prepend || $this->append){
-            $now = $this->randomfilename();
-                
-            return $pdf->save($now, "string");
-
-        }else{
-            return $pdf->output();
-        }       
+    public function generate($request=[], $rows=null){
+        $pdf=$this->doGenerate($request, $rows);
+        return $pdf->output();
     }
 
     
-    public function saveTmp($request=[]){
-        $pdf=$this->generate($request);
+    public function saveTmp($request=[], $rows=null){
+        $pdf=$this->generate($request, $rows);
 
         if($pdf){
             $now = $this->randomfilename();
@@ -391,73 +398,76 @@ class BaseReport
 
     
 
-    protected function addPdfViews(&$pdfMerger, $viewnames, $args=[]){
-        if($viewnames){
-            foreach($viewnames as $viewname){
-                $this->addPdfView($pdfMerger, $viewname, $args);
-            }       
+    private function prepareMultipleBody($parameters, $rows){
+        $ret="";
+
+        $report_columns=$this->getColumns();
+
+        $columns=array_map(function($column){
+            return $column["label"]??$column["name"];
+        },$report_columns);
+        // dd($columns);
+
+        // dump($rows);
+        $ret.=$this->view('header', array_merge($parameters, compact('columns')))->render();
+        foreach($rows as $row){
+                    // dd($row);
+            $columns=collect($report_columns)->map(function($column, $key) use ($row){
+                return $this->applyValue($row[$key], $column);
+            })->toArray();
+            // dd($columns);
+
+            $ret.=$this->view('row', array_merge($parameters, compact('columns')))->render();
+ 
         }
-    }
+        $ret.=$this->view('footer', array_merge($parameters,['num_rows'=>count($rows)]))->render();
 
-
-    private function addPdfView(&$pdfMerger, $viewname, $args=[]){
-        // dump($viewname);
-        $now = $this->randomfilename();
-        $pdf=PDF::loadView( $this->viewPath($viewname), $args )->setPaper($this->pagesize, $this->orientation);
-        // dd($pdf);
-        Storage::put('tmp/'.$now, $pdf->output());
-        $pdfMerger->addPDF(storage_path('app/tmp/'.$now));
-
-    }
-
+        return $ret;
+        // "<pre>".json_pretty($rows)."</pre>";
+    }   
 
     
     /** 
      * General el PDF
      * Devuelve el contenido binario
      */
-    private function doGenerate($parameters=[]){
+    private function doGenerate($parameters=[], $rows=[]){
+ 
+        $parameters=$this->prepareParameters($parameters);
+        // dd($rows);
+        if($rows){
+            $parameters["table_body"] = $this->prepareMultipleBody($parameters, $rows);
+        }
+        // dd($parameters);
+        // dd($template_name);
+        PDF::setOptions(['isRemoteEnabled' => true]);
+
+        try{
+            
+            return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
         
-       
-        // if($this->engine =="dompdf"){
-            $parameters=$this->prepareParameters($parameters);
-            // dd($template_name);
-            
-            PDF::setOptions(['isRemoteEnabled' => true]);
-            
-            
-            try{
-            
-            
-                if($this->prepend || $this->append){
-                    Storage::makeDirectory('tmp');
-                        
-                    $pdfMerger = PDFMerger::init();
-                    
-                    $this->addPdfViews($pdfMerger, $this->prepend, $parameters);
-                    
-                    $now = $this->randomfilename();
-                    $main_pdf= PDF::loadView( $this->viewPath($this->template_name), $parameters)->setPaper($this->pagesize, $this->orientation);
-                    Storage::put('tmp/'.$now, $main_pdf->output());
-                    $pdfMerger->addPDF(storage_path('app/tmp/'.$now));
+        }catch(Exception $e){
+            // dd($e);
+        }
+        
+    }
 
 
-                    $this->addPdfViews($pdfMerger, $this->append, $parameters);
-                    
+    public function getColumns(){
+        if(uses_trait($this, 'Ajtarragona\Reports\Traits\MultipleReport')){
+            $columns=$this->columns();
+            $ret=[];
+            if($columns){
                 
-                    $pdfMerger->merge(); //For a normal merge (No blank page added)                
-                    return $pdfMerger;
-
-                
-                }else{
-                    return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
-
+                foreach($columns as $column){
+                    if(isset($column["name"])){
+                        $ret[$column["name"]] = array_merge(["type"=>"text","label"=>$column["name"]],$column);
+                    }
                 }
-            
-            }catch(Exception $e){
-                // dd($e);
             }
-        
+            return $ret;
+        }
+        return [];
     }
 
     

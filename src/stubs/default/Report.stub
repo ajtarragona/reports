@@ -9,5 +9,5 @@ class _REPORT_CLASS_NAME_ extends BaseReport{
     public $short_name = "_REPORT_SLUG_";
     public $name = "_REPORT_NAME_";
 
-
+    
 }

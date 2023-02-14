@@ -22,6 +22,7 @@ table{
 			padding:0px;
 			border-top:1px solid $borders-color;
 			border-bottom:2px solid $borders-color;
+			text-align: left;
 			>div{
 				padding:10px 8px;
 			}
@@ -48,6 +49,7 @@ table{
 				font-style:italic;
 				border-top:2px solid #333;
 				border-bottom:1px solid $borders-color;
+				
 			}
 			
 			thead th{
@@ -105,6 +107,14 @@ table{
 
 			tbody td.title{
 				font-weight: bold;
+			}
+		}
+
+		&.table-striped{
+			tbody tr:nth-child(even) td,
+			tbody tr:nth-child(even) th
+			{
+				background-color:$gray-200;
 			}
 		}
 

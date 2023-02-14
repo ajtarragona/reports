@@ -15,7 +15,8 @@
         "php": ">=7.0.0",
         "laravel/framework": "^6.0",
         "barryvdh/laravel-dompdf": "^0.8.3",
-        "daltcore/lara-pdf-merger": "^2.0"
+        "daltcore/lara-pdf-merger": "^2.0",
+        "fakerphp/faker": "^1.9.1"
     },
     "autoload": {
         "psr-4": {

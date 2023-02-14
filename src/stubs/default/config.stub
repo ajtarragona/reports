@@ -3,6 +3,7 @@
     return [
         "short_name"=>"_REPORT_SLUG_",
         "name"=>"_REPORT_NAME_",
+        "multiple"=> _REPORT_MULTIPLE_,
         "icon" => null,
         "color" => null,  
         "orientations"=> ["portrait", "landscape"],

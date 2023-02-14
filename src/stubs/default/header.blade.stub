@@ -1,0 +1,13 @@
+<table class="table table-striped fullwidth">
+    <thead>
+        <tr>
+            @if($columns)
+                @foreach($columns as $column_key=>$column_label)
+                    <th><div>{{  $column_label  }}</div></th>
+                @endforeach
+            @endif
+        
+        </tr>
+    </thead>
+
+    <tbody>

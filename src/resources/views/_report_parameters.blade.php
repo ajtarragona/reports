@@ -1,7 +1,7 @@
 
 
 {{-- @dump($report_parameters) --}}
-<form method="post" action="{{ route('tgn-reports.generate',$report->short_name)}}" target="report-preview"> 
+<form method="post" action="{{ route('tgn-reports.preview',$report->short_name)}}" target="report-preview"> 
     @csrf
     <div class="card mt-3 mb-3">
         <div class="card-header d-flex justify-content-between align-items-center pe-2">
@@ -63,7 +63,11 @@
                              
                     @endif
                 @endif
+
+               
+
                 @if($parameters)
+                    {{-- @dump($parameters) --}}
                     @foreach($parameters as $parameter_name=>$parameter)
                         @includeFirst(['tgn-reports::_report_parameter-'.$parameter["type"], 'tgn-reports::_report_parameter-text'],[
                             'name'=>$parameter_name,
@@ -73,6 +77,33 @@
                         ])
                     @endforeach
                  @endif
+
+
+                 @if($report->multiple)
+                    
+                    @include('tgn-reports::_report_parameter-number',[
+                        'name'=>'num_rows',
+                        'options'=> null,
+                        'value'=>$report_parameters['num_rows'] ?? 5,
+                        'label'=> 'Files'
+                    ])
+                    
+                    <li class="list-group-item list-group-item-secondary">
+                        Columnes
+                    </li>
+
+                    @foreach($report->getColumns() as $column_key=>$column)
+                        @includeFirst(['tgn-reports::_report_parameter-'.$column["type"], 'tgn-reports::_report_parameter-text'],[
+                            'name'=>'columns['.$column_key.']',
+                            'options'=> $column["options"] ?? null,
+                            'value'=>$report_parameters[$column_key] ?? null,
+                            'label'=> $column["label"]
+                        ])
+                        
+                        
+                    @endforeach
+                @endif
+
             </ul>
         </div>
     </div>

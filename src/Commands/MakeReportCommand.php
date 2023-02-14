@@ -15,7 +15,7 @@ class MakeReportCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:tgn-report {name : The report name} {--f|force= : Force creation } ';
+    protected $signature = 'make:tgn-report {name : The report name} {--m|multiple : Multiple report } {--f|force : Force creation } ';
 
     /**
      * The console command description.
@@ -26,6 +26,7 @@ class MakeReportCommand extends Command
     protected $namespace = 'Reports';
 
     protected $name;
+    protected $multiple=false;
     protected $files;
     protected $options = [];
     
@@ -38,6 +39,7 @@ class MakeReportCommand extends Command
         return array_merge([
             '_REPORT_NAME_' => $this->reportName(),
             '_REPORT_SLUG_' => $this->name,
+            '_REPORT_MULTIPLE_' => $this->multiple ? 'true': 'false',
             '_REPORT_CLASS_NAME_' => $this->reportClassName()
         ], $replacements);
     }
@@ -54,7 +56,8 @@ class MakeReportCommand extends Command
     public function handle()
     {
         $this->info('Running TGN Report Generator ...');
-
+        $this->multiple = $this->option('multiple') ? true:false;
+            
         $this->name = Str::snake(str_replace('-','_',trim($this->argument('name'))));
         
         $ret=$this->makeReportFolder();
@@ -124,21 +127,35 @@ class MakeReportCommand extends Command
         $exists=$this->files->exists(base_path($file_path));
         // dd($exists);
         if(!$exists || ($exists && $this->ask('Report class file already exists. Do you want to overwrite (y/n)?', 'y') == 'y')){
-            $this->makeFile("Report", $classname);
+            $this->makeFile("Report".($this->multiple?"Multi":""), $classname);
         
             $this->info("Created `{$classname}`");
         }
         
         return $this;
     }
-    protected function makeReportTemplate(){
-        $file_path=$this->reportPath('template.blade.php');
+
+    protected function generateTemplateFromStub($template_name, $target_name=null){
+        if(!$target_name) $target_name=$template_name;
+
+        $file_path=$this->reportPath($target_name.'.blade.php');
         $exists=$this->files->exists(base_path($file_path));
         // dd($exists);
-        if(!$exists || ($exists && $this->ask('Template file already exists. Do you want to overwrite (y/n)?', 'y') == 'y')){
-            $this->makeFile("template.blade", "template.blade.php");
+        if(!$exists || ($exists && $this->ask('Template `'.$target_name.'` file already exists. Do you want to overwrite (y/n)?', 'y') == 'y')){
+            $this->makeFile($template_name.".blade", $target_name.".blade.php");
         
-            $this->info('Created `template.blade.php`');
+            $this->info('Created `'.$target_name.'.blade.php`');
+        }
+    }
+
+    protected function makeReportTemplate(){
+        if($this->multiple){
+            foreach(['footer','header','row'] as $template_name){
+                $this->generateTemplateFromStub($template_name);
+            }
+            $this->generateTemplateFromStub('template-multi','template');
+        }else{
+            $this->generateTemplateFromStub('template');
         }
         
         return $this;

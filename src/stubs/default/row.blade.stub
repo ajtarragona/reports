@@ -1,0 +1,11 @@
+<tr>
+	@if($columns)
+		@foreach($columns as $column_key=>$column_value)
+			<td>
+				<div>
+					{!! $column_value !!} 	
+				</div>
+			</td>
+		@endforeach			
+	@endif
+</tr>

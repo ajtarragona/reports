@@ -33,15 +33,29 @@ class ReportsController extends Controller
     }
 
     
-    public function generate($report_name, Request $request, ReportsService $repo){
+    public function preview($report_name, Request $request, ReportsService $repo){
         //  dd($request->all());
         Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
 
         $report=$repo->find($report_name);
-        // dd($report);
-        $parameters=$request->except(['_token','submit_action']);
-        // dd($parameters);
-        return $report->stream($parameters);
+        $parameters=$request->except(['_token','submit_action','num_rows','columns']);
+            
+        if($report->multiple){
+            // dd($request->all());
+            $rows=[];
+            
+            for($i=0;$i<apply_value($request->num_rows);$i++){
+                $rows[]= array_map(function($value) use ($i){ 
+                    return $value;// ." ". ($i+1);
+                }, $request->columns);
+            }
+            // dd($rows);
+            return $report->stream($parameters, $rows);
+        }else{
+            // dd($report);
+            // dd($parameters);
+            return $report->stream($parameters);
+        }
         
         
     }

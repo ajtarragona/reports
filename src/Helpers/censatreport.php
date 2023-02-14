@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+use Faker\Factory as FakerFactory;
 
 if (! function_exists('tgn_reports')) {
 	function tgn_reports() {
@@ -38,4 +40,34 @@ if (! function_exists('array_permutations')) {
         }
         return $ret;
     }
+}
+
+if(!function_exists('uses_trait')){
+	function uses_trait($obj, $name){
+		return  in_array($name, array_keys(class_uses($obj)));
+
+	}
+}
+
+
+if(!function_exists('apply_value')){
+	function apply_value($value){
+        if(Str::startsWith($value,"@")){
+            // dd("applyValue",$value);
+            $method=substr($value,1); //quito la arroba
+            $params=[];
+            // dd($method);
+            if(Str::contains($method,"(")){
+                $tmp=substr($method, 0,strpos($method,"("));
+                $params=trim(substr($method,strpos($method,"(")),"()");
+                $params=explode(",",$params);
+                $method=$tmp;
+                
+            }
+            
+            $faker = FakerFactory::create();
+            $value=$faker->{$method}(...$params) ?? $value;
+        }
+        return $value;
+	}
 }

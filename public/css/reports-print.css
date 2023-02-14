@@ -3516,6 +3516,7 @@ table.table thead th {
   padding: 0px;
   border-top: 1px solid #ced4da;
   border-bottom: 2px solid #ced4da;
+  text-align: left;
 }
 
 table.table thead th > div {
@@ -3595,6 +3596,11 @@ table.table.table-bordered tbody td:last-child {
 
 table.table.table-bordered tbody td.title {
   font-weight: bold;
+}
+
+table.table.table-striped tbody tr:nth-child(even) td,
+table.table.table-striped tbody tr:nth-child(even) th {
+  background-color: #f7f7f9;
 }
 
 table.table.table-compact thead th > div,
