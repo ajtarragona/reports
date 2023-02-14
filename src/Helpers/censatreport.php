@@ -50,6 +50,7 @@ if(!function_exists('uses_trait')){
 }
 
 
+
 if(!function_exists('apply_value')){
 	function apply_value($value){
         if(Str::startsWith($value,"@")){
