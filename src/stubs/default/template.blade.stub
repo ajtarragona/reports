@@ -1,19 +1,21 @@
-@extends('reports::layout/pdf-master')
+@extends('tgn-reports::layout/pdf-master')
 
 @section('title')
 	_REPORT_NAME_
 @endsection
 
 @section('subtitle')
-
+	Subtitle here
 @endsection
 
 @section('body')
 
 	<div class="page">
-
 		START HERE
-
     </div>
+
 @endsection
 
+@section('footer')
+    FOOTER HERE
+@endsection

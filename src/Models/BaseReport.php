@@ -3,30 +3,33 @@
 namespace Ajtarragona\Reports\Models;
 
 use Ajtarragona\Reports\Services\ReportsService;
+use Ajtarragona\Reports\Traits\ReportFormatters;
 use Exception;
 use PDF;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Storage;
+use Illuminate\Support\Arr;
 
 class BaseReport
 {
     
-    
+    use ReportFormatters;
 
     public $short_name = "";
-    public $name = "";
-    public $icon = null;
-    public $color = null;  
     
-    public $pagesize="a4";
-    public $orientation="portrait";
-    public $margin="lg";
+    public $pagesize;
+    public $orientation;
+    public $margin;
+    public $language;
+    
     public $pagination=true;
-
+    public $multiple = false;
+    
    
     protected $entities=null;
 
     protected $template_name="template";
+    protected $template_extension=".blade.php";
     
     protected $prepend = [];
     protected $append = [];
@@ -34,16 +37,23 @@ class BaseReport
     protected $engine = "dompdf";
 
 
-    protected $multiple = false;
+    
     protected $config = [];
     protected $parameters = [];
 
     
+    public function __construct()
+    {
+        $this->orientation = Arr::first($this->config('orientations',[config('reports.default_orientation')])) ;
+        $this->pagesize = Arr::first($this->config('pagesizes',[config('reports.default_pagesize')])) ;
+        $this->language = Arr::first($this->config('languages',[config('reports.default_language')])) ;
+        $this->margin = $this->config('margin',config('reports.default_margin')) ;
+        $this->pagination = $this->config('pagination',true) ;
+        $this->multiple = $this->config('multiple',false) ;
 
-
-    public function isMultiple(){
-        return $this->multiple;
     }
+
+
 
     public function getBasePath(){
         return ReportsService::BASE_PATH;
@@ -67,12 +77,66 @@ class BaseReport
         }
     }
     
-    public function getTemplatePath($lang=null){
+    private function getTemplateNameSuffixed($sufixes){
         $path=$this->getPath();
-        $path.=DIRECTORY_SEPARATOR."template";
-        if($lang) $path.="-".$lang;
-        $path.=".blade.php";
-        return $path;
+        
+        foreach(array_permutations($sufixes) as $suf){
+            $template_name = $this->template_name."-".strtolower(implode("-",$suf));
+            // dump($path.DIRECTORY_SEPARATOR.$template_name.$this->template_extension);
+            if(file_exists($path.DIRECTORY_SEPARATOR.$template_name.$this->template_extension)){
+                return $template_name;
+            }
+        }
+        return false;
+    }
+
+    
+    public function templateName(){
+        
+       
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->pagesize,
+            $this->orientation,
+            $this->language
+        ])) return $ret;
+        
+     
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->pagesize,
+            $this->orientation,
+        ])) return $ret;
+     
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->pagesize,
+            $this->language,
+        ])) return $ret;
+        
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->orientation,
+            $this->language,
+        ])) return $ret;
+        
+        
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->pagesize,
+        ])) return $ret;
+        
+      
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->orientation,
+        ])) return $ret;
+        
+        if($ret=$this->getTemplateNameSuffixed([
+            $this->language,
+        ])) return $ret;
+  
+        
+        return $this->template_name;
+    }
+
+   
+    public function getTemplatePath(){
+       return $this->getPath().DIRECTORY_SEPARATOR.$this->templateName().$this->template_extension;
     }
     
     
@@ -80,6 +144,7 @@ class BaseReport
 
         //autodetected parameters
         $path=$this->getTemplatePath();
+        // dd($path);
         $parameters=[];
         if(file_exists($path)){
             $content=file_get_contents($path);
@@ -109,24 +174,42 @@ class BaseReport
 
     public function applyFormatter($value, $formatter, $formatter_parameters=null){
         // dump($formatter, $value, $formatter_parameters);
-        $function_parameters = [$value];
-        if($formatter_parameters) $function_parameters = array_merge([$value],$formatter_parameters);
+        if(is_array($formatter)){
+            $ret=$value;
+            foreach($formatter as $i=>$format){
+                $ret=$this->applyFormatter($ret, $format, $formatter_parameters[$i] ?? null);
+            }
+            return $ret;
+        }else{
+            $function_parameters = [$value];
+            if($formatter_parameters) $function_parameters = array_merge([$value],$formatter_parameters);
 
-        // dump($function_parameters, method_exists($this, $formatter));
-        if(function_exists($formatter)) return $formatter(...$function_parameters);
-        else if(method_exists($this, $formatter)) return $this->{$formatter}(...$function_parameters);
-        return $value;
+            // dump($function_parameters, method_exists($this, $formatter));
+            if(function_exists($formatter)) return $formatter(...$function_parameters);
+            else if(method_exists($this, $formatter)) return $this->{$formatter}(...$function_parameters);
+            return $value;
+        }
     }
 
 
     /**
      * Inicializa los parametros que se le pasarán a la vista previa
      */
-    public function templatePreviewParameters($values=[]){
+    public function prepareParameters($values=[]){
+        
+        
+        if(isset($values["orientation"])) $this->orientation =  $values["orientation"];
+        if(isset($values["pagesize"])) $this->pagesize =  $values["pagesize"];
+        if(isset($values["language"])) $this->language =  $values["language"];
+        if(isset($values["margin"])) $this->margin =  $values["margin"];
+        if(isset($values["pagination"])) $this->pagination =  $values["pagination"];
+
+           
         $parameters= $this->getTemplateParameters();
         // dd($parameters, $values);
         $ret=[];
 
+        /** inicializo los parametros que no tengan valor con un tag */
         foreach($parameters as $parameter_name=>$parameter){
             if($parameter["type"]!="boolean"){
                 $value=$values[$parameter_name]??null;
@@ -141,13 +224,13 @@ class BaseReport
             }
             
         }
-        if(isset($values["orientation"])) $ret['orientation']=$values["orientation"];
-        if(isset($values["pagesize"])) $ret['pagesize']=$values["pagesize"];
-
-        if($this->pagination) $ret['pagination'] = true;
+        
+        $ret['orientation']=$this->orientation;
+        $ret['pagesize']=$this->pagesize;
+        $ret['language'] = $this->language;
         $ret['margin'] = $this->margin;
+        $ret['pagination'] = $this->pagination;
 
-        // dd($ret);
         return $ret;
     }
 
@@ -186,18 +269,14 @@ class BaseReport
         }
     }
 
-    public function templateName(){
-        $ret= $this->template_name;
-        return $ret;
-    }
-
-   
+  
     
 
 
     public function getPagesizes(){
         return $this->config('pagesizes', []);
     }
+
     public function getPagesizesCombo(){
         $ret=[];
         foreach($this->getPagesizes() as $pagesize){
@@ -331,6 +410,8 @@ class BaseReport
 
     }
 
+
+    
     /** 
      * General el PDF
      * Devuelve el contenido binario
@@ -339,11 +420,9 @@ class BaseReport
         
        
         // if($this->engine =="dompdf"){
-            if(isset($parameters["orientation"])) $this->orientation = $parameters["orientation"];
-            if(isset($parameters["pagesize"])) $this->pagesize = $parameters["pagesize"];
-            if(isset($parameters["margin"])) $this->margin = $parameters["margin"];
-
-
+            $parameters=$this->prepareParameters($parameters);
+            // dd($template_name);
+            
             PDF::setOptions(['isRemoteEnabled' => true]);
             
             
@@ -371,7 +450,6 @@ class BaseReport
 
                 
                 }else{
-                    // dd($this->viewPath($this->templateName()));
                     return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
 
                 }

@@ -1,0 +1,139 @@
+
+/** 
+BASE FONT
+*/
+
+
+/*  base elements */
+
+
+h1, .h1{
+	margin:0px;
+	padding:0px;
+	font-size:$font-size-xxl;
+	text-transform:uppercase;
+	margin-bottom:.5em;
+	font-weight:normal;
+	font-style:italic;
+}
+
+
+h2, .h2{
+	margin:0px;
+	padding:0px;
+	font-size:$font-size-xl;
+	margin-bottom:.5em;
+	text-transform:uppercase;
+	font-weight:bold;
+	
+}
+
+h3, .h3{
+	margin:0px;
+	padding:0px;
+	font-size:$font-size-lg;
+	margin-bottom:.5em;
+	text-transform:uppercase;
+	color:$primary;
+} 
+
+h4, .h4{
+	margin:0px;
+	padding:0px;
+	font-size:$font-size-md;
+	text-transform:uppercase;
+	margin-bottom:1em;
+
+}
+h5, .h5{
+	margin:0px;
+	padding:0px;
+	font-size:$font-size-md;
+	color:$gray-700;
+	margin-bottom:1em;
+	text-transform:uppercase;
+	font-style:italic;
+}	
+
+.display-1{
+	margin:0px;
+	padding:0px;
+	font-size:40pt;
+	font-weight: lighter;
+	text-transform:none;
+	margin-bottom:.5em;
+	font-style:normal;
+	font-family: $font-family;
+}
+
+
+strong{
+	font-weight: bold;
+}
+
+code{
+	color:$info;
+	border:1px solid $info;
+	background-color: rgba($info,0.1);
+	font-family: monospace; 
+	font-size:$font-size-sm;
+}
+
+
+p{
+	font-size:$font-size-md;
+	padding:0px;
+	margin-top:0px;
+	margin-bottom: $font-size-md + (1/4*$font-size-md);
+}
+
+
+
+.badge{ 
+	text-align:center;
+	border-radius:10px; 
+	font-weight: bold;
+	margin:5px;
+	padding:3px 8px;
+}
+
+
+ul{
+	list-style: circle;
+	margin:0;
+	padding:0;
+	margin-left:1em;
+
+	&.unstyled{
+		margin-left:0;
+		list-style: none;
+	
+	}
+}
+
+ol{
+	margin:0;
+	padding:0;
+	margin-left:1em;
+
+}
+
+blockquote{
+	padding:1em;
+	margin:0 0 1em 0;
+	border:1px solid $borders-color;
+
+	p:last-child{
+		margin-bottom:0px;
+	}
+}
+
+.card{
+	padding:1em;
+	margin:0 0 1em 0;
+	border:1px solid $borders-color;
+	
+	p:last-child{
+		margin-bottom:0px;
+	}
+}

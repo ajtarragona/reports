@@ -8,7 +8,15 @@
     </li>
     <li class="list-group-item d-flex align-items-start">
         <small class="text-muted  w-50 ">Múltiple</small>
-        <span class="badge bg-light text-dark">{{ $report->config('multiple',false) ?'SI':'NO' }}</span>
+        <span class="badge bg-{{ $report->multiple ?'success':'warning' }}">{{ $report->multiple ?'SI':'NO' }}</span>
+    </li>
+    <li class="list-group-item d-flex align-items-start">
+        <small class="text-muted  w-50 ">Pagination</small>
+        <span class="badge bg-{{ $report->pagination ?'success':'warning' }} ">{{ $report->pagination ?'SI':'NO' }}</span>
+    </li>
+    <li class="list-group-item d-flex align-items-start">
+        <small class="text-muted  w-50 ">Margin</small>
+        <span class="badge bg-light text-dark">{{ __('tgn-reports::reports.margins.'.$report->margin)  }}</span>
     </li>
     @if($pagesizes=$report->getPagesizes())
        

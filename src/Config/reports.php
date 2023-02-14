@@ -28,5 +28,9 @@ return [
     */
 
     'stub_path' => 'default',
+    'default_language' => 'ca',
+    'default_pagesize' => 'A4',
+    'default_orientation' => 'portrait',
+    'default_margin' => 'lg'
 ];
 

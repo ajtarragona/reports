@@ -1,0 +1,110 @@
+
+$page-margins : (
+	'0': 0px, 
+	'xs' : 5px,
+	'sm' : 10px,
+	'md' : 25px,
+	'lg' : 50px,
+	'xl' : 80px,
+	'xxl': 120px
+);
+
+
+@page { 
+	margin: 0;//($pdf-header-height+$pdf-margin-top) $pdf-margin-right ($pdf-footer-height+$pdf-margin-bottom) $pdf-margin-left;
+
+}
+
+body{
+	font-size:$font-size-md;
+	font-weight:normal;
+	margin: map.get($page-margins, "lg");
+	padding:0;
+	color:$gray-900;
+	font-family: $font-family;
+}
+
+@each $key, $margin in $page-margins {
+	body.margin-#{$key} { 
+		margin: ($margin + $pdf-header-height ) $margin ($pdf-footer-height+$margin) $margin;  
+	}	
+}
+
+div,p,span,td,th{
+	box-sizing: border-box;
+}
+
+
+/* Layout */
+
+
+.page-break{
+	//page-break-before:always;
+	page-break-after:always;
+}
+
+.page { 
+	margin-top: 0;//$pdf-margin-top;
+	page-break-after: always; 
+}
+.page:last-child { page-break-after: never; }
+
+header { 
+	position: fixed; 
+	left: 0px; 
+	top:0;
+	// top: -($pdf-header-height+$pdf-margin-top); 
+	// right: 0px; 
+	// height: $pdf-header-height; 
+	//background-color: orange; 
+	//border:1px solid black; 
+	text-align: center; 
+	// padding-top:$pdf-margin-top;
+}
+
+@each $key, $margin in $page-margins {
+	body.margin-#{$key} header {
+		margin: $margin; 
+	
+	}
+	
+}
+footer { 
+	position: fixed; 
+	left: 0px; 
+	bottom: 0; //-($pdf-footer-height+$margin); 
+	height: $pdf-footer-height; 
+	// background-color: $gray-400;
+	
+}
+@each $key, $margin in $page-margins {
+	body.margin-#{$key} footer {
+		padding:0 $margin $margin $margin;
+	}
+}
+
+footer .content{
+	color:$muted;
+	font-size:$font-size-sm;
+}
+
+footer .page-number{
+	font-size:$font-size-sm;
+}
+
+footer .pagenum:after { content: counter(page); }
+
+
+
+hr{
+	border-width: 0px;
+	border-color: $borders-color;
+	height: 1px;
+	background-color: $borders-color;
+
+	&.spacer{
+		margin-top:$margin-3;
+		margin-bottom:$margin-3;
+	}
+}
+

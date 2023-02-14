@@ -1,0 +1,72 @@
+$font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+// $font-family: "Arvo", serif !default;
+
+$pdf-header-height: 100px;
+$pdf-footer-height: 10px;
+
+
+
+/** Colors */
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #f7f7f9 !default;
+$gray-300: #eceeef !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #919aa1 !default;
+$gray-700: #55595c !default;
+$gray-800: #343a40 !default;
+$gray-900: #1a1a1a !default;
+$black:    #000 !default;
+
+$blue:    #007bff !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #d9534f !default;
+$orange:  #fd7e14 !default;
+$yellow:  #f0ad4e !default;
+$green:   #4BBF73 !default;
+$teal:    #20c997 !default;
+$cyan:    #1F9BCF !default;
+$tarragona : #a8113c !default;
+
+$primary:       $tarragona !default;
+$secondary:     $gray-700 !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
+$muted:			$gray-600 !default;	
+
+$borders-color: $gray-400;
+
+
+/** Font sizes */
+
+$font-size-xs : 6pt;
+$font-size-sm : 9pt;
+$font-size-md : 11pt;
+$font-size-lg : 14pt;
+$font-size-xl : 18pt;
+$font-size-xxl : 22pt;
+
+
+/** Spacing */
+
+$margin-0 : 0px;
+$margin-1 : 5px;
+$margin-2 : 15px;
+$margin-3 : 25px;
+$margin-4 : 45px;
+$margin-5 : 80px;
+
+$border-0 : 0px;
+$border-1 : 1px;
+$border-2 : 2px;
+$border-3 : 3px;
+$border-4 : 4px;
+$border-5 : 5px;

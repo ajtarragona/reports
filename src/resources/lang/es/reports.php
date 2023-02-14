@@ -11,6 +11,14 @@ return [
         'portrait'=> 'Vertical',
         'landscape'=> 'Horizontal',
     ],
+    'margins'=>[
+        'xs'=> 'Muy pequeño',
+        'sm'=> 'Pequeño',
+        'md'=> 'Mediano',
+        'lg'=> 'Grande',
+        'xl'=> 'Muy grande',
+        'xxl'=> 'Extra grande',
+    ],
     'languages'=>[
         'ca'=> 'Catalan',
         'es'=> 'Castellano',

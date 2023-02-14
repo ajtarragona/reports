@@ -1,4 +1,4 @@
-@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Montserrat:100,400,500,800);@charset "UTF-8";
 
 /*!
  * Bootstrap  v5.2.3 (https://getbootstrap.com/)
@@ -20590,5 +20590,9 @@ fieldset:disabled .btn {
 
 .bi-wikipedia::before {
   content: "\F8CC";
+}
+
+body {
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 

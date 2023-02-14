@@ -46,21 +46,14 @@
                     </div>
                 </div>
                 <div class="col-sm-10 h-100 bg-secondary  bg-opacity-10">
-                    <div class="h-100">
+                    <div class="h-100 ">
                         @if($report_name)
                             
                             @include('tgn-reports::_report_single',['report'=>$current_report])
                             
                         @else
-                            <div class="p-3">
-                                <p>{{ __('tgn-reports::reports.Pots crear nous reports amb la comanda Artisan:') }}</p>
-                                <p class="bg-dark p-3 rounded">
-                                    <code >
-                                    php artisan make:censat-report {report_name}
-                                    </code>
-                                </p>
-                                <p>En trobaràs el codi font a la ruta <code>storage/app/reports</code></p>
-                            </div>
+                            @include('tgn-reports::docs')
+                            
                         @endif
                     </div>
                 </div>

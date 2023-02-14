@@ -5,6 +5,7 @@ namespace Ajtarragona\Reports\Controllers;
 use Ajtarragona\Reports\Services\ReportsService;
 use Illuminate\Http\Request;
 use Spatie\PdfToImage\Pdf;
+use \Artisan;
 
 class ReportsController extends Controller
 {
@@ -34,10 +35,11 @@ class ReportsController extends Controller
     
     public function generate($report_name, Request $request, ReportsService $repo){
         //  dd($request->all());
+        Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
+
         $report=$repo->find($report_name);
         // dd($report);
         $parameters=$request->except(['_token','submit_action']);
-        $parameters=$report->templatePreviewParameters($parameters);
         // dd($parameters);
         return $report->stream($parameters);
         

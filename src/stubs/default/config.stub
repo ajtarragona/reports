@@ -3,6 +3,11 @@
     return [
         "short_name"=>"_REPORT_SLUG_",
         "name"=>"_REPORT_NAME_",
+        "icon" => null,
+        "color" => null,  
         "orientations"=> ["portrait", "landscape"],
         "pagesizes"=> ["A4", "A3"],
+        "languages"=> ["ca"],
+        "pagination"=> true,
+        "margin"=> "lg"
     ];

@@ -4,7 +4,13 @@ table{
 	font-size:$font-size-md;
 	border-spacing: 0;
     border-collapse: collapse;	
-
+	thead td,
+	thead th,
+	tbody td,
+	tbody th{
+		vertical-align:top;
+	}
+	
 	// width:100%;
 	&.table{
 		border-spacing: 0;

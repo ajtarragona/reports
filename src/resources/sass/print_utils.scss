@@ -11,12 +11,6 @@
 
 
 
-$font-size-xs : 6pt;
-$font-size-sm : 9pt;
-$font-size-md : 11pt;
-$font-size-lg : 14pt;
-$font-size-xl : 18pt;
-$font-size-xxl : 22pt;
 
 $font-sizes : (
 	'xs' : $font-size-xs,
@@ -36,12 +30,7 @@ $font-sizes : (
      }
 }
 
-$margin-0 : 0px;
-$margin-1 : 5px;
-$margin-2 : 15px;
-$margin-3 : 25px;
-$margin-4 : 45px;
-$margin-5 : 80px;
+
 
 
 $margins : (
@@ -83,13 +72,6 @@ $margins : (
 .b-dotted{ 	border-style:dotted; }
 .b-dashed{ 	border-style:dashed; }
 
-$border-0 : 0px;
-$border-1 : 1px;
-$border-2 : 2px;
-$border-3 : 3px;
-$border-4 : 4px;
-$border-5 : 5px;
-
 
 $borders : (
 	'0': $border-0, 
@@ -103,11 +85,11 @@ $borders : (
 @each $key,$border in $borders {
 
     .b-#{$key} { border-width: $border  }
-    .b-a-#{$key} { border-width: $border  }
-    .b-t-#{$key} { border-top-width:  $border }
-    .b-r-#{$key} { border-right-width:   $border    }
-    .b-b-#{$key} { border-bottom-width:  $border  }
-    .b-l-#{$key} { border-left-width:   $border}
-    .b-x-#{$key} { border-left-width:  $border ;  border-right-width:  $border }
-    .b-y-#{$key} { border-top-width: $border ;  border-bottom-width:  $border  }
+    .ba-#{$key} { border-width: $border  }
+    .bt-#{$key} { border-top-width:  $border }
+    .br-#{$key} { border-right-width:   $border    }
+    .bb-#{$key} { border-bottom-width:  $border  }
+    .bl-#{$key} { border-left-width:   $border}
+    .bx-#{$key} { border-left-width:  $border ;  border-right-width:  $border }
+    .by-#{$key} { border-top-width: $border ;  border-bottom-width:  $border  }
 }
