@@ -2,7 +2,6 @@
         <div class="col-sm-3 h-100" >
             <div class="p-3 h-100 overflow-auto" >
                 @include('tgn-reports::_report_summary',['report'=>$report])
-                {{-- @dump($report_parameters) --}}
                 @include('tgn-reports::_report_parameters', ['report'=>$report])
             
             </div>

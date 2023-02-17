@@ -1,6 +1,17 @@
 <ul class="list-group">
-    <li class="list-group-item p-4">
-        <h5><i class="bi bi-file-earmark-pdf"></i> {{$report->name}}</h5>
+    <li class="list-group-item p-4 ">
+        <div class="d-flex justify-content-between align-items-end">
+            <h5 class="mb-1"><i class="bi bi-file-earmark-pdf"></i> {{$report->name()}}</h5>
+            <div>
+                <form method="post" action="{{route('tgn-reports.export',$report->short_name)}}">
+                    @csrf
+                    <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-download"></i> Download</button>
+                </form>
+            </div>
+        </div>
+        @if($description=$report->description())
+            <small class="text-sm text-muted mt-3 d-block">{!! $report->description() !!}</small>
+        @endif
     </li>
     <li class="list-group-item d-flex align-items-start">
         <small class="text-muted  w-50 ">Nom</small>
@@ -16,7 +27,7 @@
     </li>
     <li class="list-group-item d-flex align-items-start">
         <small class="text-muted  w-50 ">Margin</small>
-        <span class="badge bg-light text-dark">{{ __('tgn-reports::reports.margins.'.$report->margin)  }}</span>
+        <span class="badge bg-light text-dark">{{ strtoupper($report->margin)  }}</span>
     </li>
     @if($pagesizes=$report->getPagesizes())
        

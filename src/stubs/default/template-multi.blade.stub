@@ -1,4 +1,4 @@
-@extends('tgn-reports::layout/pdf-master')
+@extends('tgn-reports::layout/master-tarragona')
 
 @section('title')
     _REPORT_NAME_

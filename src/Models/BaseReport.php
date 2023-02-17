@@ -12,6 +12,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
 use Faker\Factory as FakerFactory;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Zip;
+use ZipArchive;
 
 class BaseReport
 {
@@ -19,6 +23,7 @@ class BaseReport
     use ReportFormatters;
 
     public $short_name = "";
+    public $name = "";
     
     public $pagesize;
     public $orientation;
@@ -37,11 +42,12 @@ class BaseReport
     
     protected $engine = "dompdf";
 
-    protected $protected_tags = ["num_rows","table_body","columns","rows","column_key","column_label","column_value"];
+    protected $protected_tags = ["num_rows","table_body","columns","rows","column_key","column_label","column_value", "loop","row"];
 
     
     protected $config = [];
     protected $parameters = [];
+    protected $columns = [];
 
     
     public function __construct()
@@ -56,6 +62,13 @@ class BaseReport
     }
 
 
+    public function name(){
+        return $this->config('name', $this->name);
+    }
+
+    public function description(){
+        return $this->config('description');
+    }
 
     public function getBasePath(){
         return ReportsService::BASE_PATH;
@@ -69,6 +82,9 @@ class BaseReport
         return ReportsService::reportPath($this->short_name);
     }
 
+    protected function getReportClassName(){
+        return ReportsService::reportClassName($this->short_name);
+    }
 
     public function config($option=null, $default=null){
         if(!$this->config) $this->config = ReportsService::getConfigFile($this->short_name);
@@ -142,18 +158,10 @@ class BaseReport
     }
     
     
-    public function getTemplateParameters(){
+    public function getAutodetectedTemplateParameters($paths=null){
         
             
-        //autodetected parameters
-        $paths=[$this->getTemplatePath()];
-        if($this->multiple){
-            $paths=array_merge([
-                $this->getPath().DIRECTORY_SEPARATOR.'footer'.$this->template_extension,
-                $this->getPath().DIRECTORY_SEPARATOR.'header'.$this->template_extension,
-                $this->getPath().DIRECTORY_SEPARATOR.'row'.$this->template_extension
-            ], $paths );
-        }
+       
         // dd($paths);
         $parameters=[];
         foreach($paths as $path){
@@ -178,18 +186,37 @@ class BaseReport
             }
             
         }
-        $parameters = array_unique($parameters);
-        // dump($parameters);
-        $ret=$this->parameters;
+        // dd($parameters);
+       return array_unique($parameters);
+       
+        
+        // dd($ret);
+        // return $ret;
+        
+
+    }
+
+
+    public function getCollectionParameterNames(){
+        return collect($this->getParameters())->where('type','collection')->keys()->toArray();
+    }
+    public function getParameters(){
+        $paths=[$this->getTemplatePath()];
+        if($this->multiple){
+            $paths=array_merge([
+                $this->getPath().DIRECTORY_SEPARATOR.'footer'.$this->template_extension,
+                $this->getPath().DIRECTORY_SEPARATOR.'header'.$this->template_extension,
+            ], $paths );
+        }
+        $parameters=$this->getAutodetectedTemplateParameters($paths);
+        
+        $ret=$this->parameters ?? [];
         foreach($parameters as $key){
             if(!in_array($key, array_keys($this->parameters))){
                 $ret[$key] = ["type"=>"text","label"=>$key ];
             }
         }
-        // dd($ret);
         return $ret;
-        
-
     }
 
     public function applyFormatter($value, $formatter, $formatter_parameters=null){
@@ -213,13 +240,23 @@ class BaseReport
 
 
     protected function applyValue($value, $parameter){
-        if(Str::startsWith($value,"@")){
-            $value=apply_value($value);
-        }else{
-            if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
+        if(is_string($value)){
+            if(Str::startsWith($value,"@")){
+                $value=apply_value($value);
+            }else{
+                if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
+            }
         }
 
         return $value;
+    }
+    public function prepareValue($value,  $parameter_name, $parameter = null){
+        if(!is_null($value) && $parameter){
+            return $this->applyValue($value, $parameter);
+            
+        }else{
+            return "<code>".strtoupper($parameter_name)."</code>";
+        }
     }
     /**
      * Inicializa los parametros que se le pasarán a la vista previa
@@ -234,22 +271,35 @@ class BaseReport
         if(isset($values["pagination"])) $this->pagination =  $values["pagination"];
 
            
-        $parameters= $this->getTemplateParameters();
+        // dump($parameters);
+        $parameters = $this->getParameters();
+        
         // dd($parameters, $values);
+        
         $ret=[];
 
         /** inicializo los parametros que no tengan valor con un tag */
         foreach($parameters as $parameter_name=>$parameter){
-            if($parameter["type"]!="boolean"){
-                $value=$values[$parameter_name]??null;
-                if(!is_null($value)){
-                    $value=$this->applyValue($value, $parameter);
-                    $ret[$parameter_name] = $value ;
-                }else{
-                    $ret[$parameter_name] ="<code>".strtoupper($parameter_name)."</code>";
-                }
-            }else{
+            if($parameter["type"]=="boolean"){
                 $ret[$parameter_name] = ($values[$parameter_name]??null) ? true: false;
+            }elseif($parameter["type"]=="collection"){
+                $value=$values[$parameter_name]??null;
+                // dump($value);
+                if($value){
+                    foreach($value as $i=>$row){
+                        foreach($row as $key=>$col_value){
+                            $value[$i][$key]=$this->prepareValue($col_value, $key, $parameter);
+                        }
+                    }
+                    // dd($value);
+                    $values[$parameter_name]=$value;
+                }
+                $ret[$parameter_name] = $value;
+            }else{
+                $value=$values[$parameter_name]??null;
+                $value=$this->prepareValue($value,  $parameter_name, $parameter);
+                $ret[$parameter_name] = $value;
+                
             }
             
         }
@@ -259,7 +309,7 @@ class BaseReport
         $ret['language'] = $this->language;
         $ret['margin'] = $this->margin;
         $ret['pagination'] = $this->pagination;
-
+// dd($ret);
         return $ret;
     }
 
@@ -398,31 +448,46 @@ class BaseReport
 
     
 
-    private function prepareMultipleBody($parameters, $rows){
+    private function prepareMultipleBody(&$parameters, $rows){
         $ret="";
 
-        $report_columns=$this->getColumns();
+        
+        $num_rows=count($rows);
 
-        $columns=array_map(function($column){
-            return $column["label"]??$column["name"];
-        },$report_columns);
-        // dd($columns);
+        $columns=$this->getColumnsNameCombo();
 
-        // dump($rows);
-        $ret.=$this->view('header', array_merge($parameters, compact('columns')))->render();
-        foreach($rows as $row){
-                    // dd($row);
-            $columns=collect($report_columns)->map(function($column, $key) use ($row){
-                return $this->applyValue($row[$key], $column);
-            })->toArray();
-            // dd($columns);
+        $parameters= array_merge($parameters, compact('columns','num_rows'));
 
-            $ret.=$this->view('row', array_merge($parameters, compact('columns')))->render();
- 
+        $ret.=$this->view('header', $parameters)->render();
+
+        if($rows){
+            
+            foreach($rows as $i=>$row){
+                 
+                $values=$this->getColumnsValues($row);
+                // dd($values);
+                $args=array_merge($parameters,$values,[
+                    'columns'=>$columns,
+                    'row'=>$values,
+                    'num_rows'=>$num_rows,
+                    'loop'=> to_object([
+                        "index"=>$i+1,
+                        "index_0"=>$i,
+                        "first"=>$i==0,
+                        "last"=> ($i== (count($rows)-1))
+                    ])
+                ]);
+                // dd($args);
+                $ret.=$this->view('row', $args )->render();
+               
+                    
+            }
         }
-        $ret.=$this->view('footer', array_merge($parameters,['num_rows'=>count($rows)]))->render();
 
-        return $ret;
+        $ret.=$this->view('footer', $parameters )->render();
+
+        $parameters["table_body"] = $ret;
+        
         // "<pre>".json_pretty($rows)."</pre>";
     }   
 
@@ -435,9 +500,9 @@ class BaseReport
  
         $parameters=$this->prepareParameters($parameters);
         // dd($rows);
-        if($rows){
-            $parameters["table_body"] = $this->prepareMultipleBody($parameters, $rows);
-        }
+        
+        if($this->multiple) $this->prepareMultipleBody($parameters, $rows);
+        
         // dd($parameters);
         // dd($template_name);
         PDF::setOptions(['isRemoteEnabled' => true]);
@@ -453,21 +518,92 @@ class BaseReport
     }
 
 
+    public function getColumnsValues($row){
+        
+        return collect($this->getColumns())->map(function($column, $key) use ($row){
+        
+            $ret= $this->applyValue($row[$key], $column);
+            // dd($ret);
+            return $ret;
+        })->toArray();
+    }
+    public function getColumnsNameCombo(){
+        // dd($report_columns);
+        return array_map(function($column){
+            return $column["label"];
+        }, $this->getColumns());
+    }
+
     public function getColumns(){
         if(uses_trait($this, 'Ajtarragona\Reports\Traits\MultipleReport')){
-            $columns=$this->columns();
-            $ret=[];
-            if($columns){
-                
-                foreach($columns as $column){
-                    if(isset($column["name"])){
-                        $ret[$column["name"]] = array_merge(["type"=>"text","label"=>$column["name"]],$column);
-                    }
+
+            $paths=[
+                $this->getPath().DIRECTORY_SEPARATOR.'row'.$this->template_extension,
+            ];
+            
+            $auto_columns= $this->getAutodetectedTemplateParameters($paths);
+            // dd($auto_columns);
+            $columns = $this->columns ?? [];
+
+            // añado las columnas autodetectadas      
+            foreach($auto_columns as $key){
+                if(!in_array($key, array_keys($this->columns??[]))){
+                    $columns[$key] = ["type"=>"text", "label"=>$key ];
                 }
             }
-            return $ret;
+
+             $report_params=array_keys($this->getParameters());
+            
+            //les añado type y label si no lo tienen            
+            foreach($columns as $key=>$column){
+                if(in_array($key, $report_params)){
+                    //le quito los parametros generales del report
+                    unset($columns[$key]);
+                }else{
+                    $columns[$key] = array_merge(["label"=>$key,'type'=>'text'], $column);
+                }
+            }
+            
+           
+            return $columns;
         }
         return [];
+    }
+
+
+    
+    /**
+     * exporta zip con el fuente del report
+     *
+     * @return void
+     */
+    public function export(){
+        
+        $zip_file = $this->getReportClassName().'.zip'; // Name of our archive to download
+        $zip = new ZipArchive();
+        $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        $path=$this->getPath();
+        
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+        foreach ($files as $name => $file)
+        {
+            // We're skipping all subfolders
+            if (!$file->isDir()) {
+                $filePath     = $file->getRealPath();
+        
+                // extracting filename with substr/strlen
+                $relativePath =   $this->getReportClassName() .''. DIRECTORY_SEPARATOR. substr($filePath, strlen($path) + 1);
+        
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+        $zip->close();
+
+        
+        return response()->download($zip_file);
+
+
     }
 
     

@@ -1,4 +1,4 @@
-@extends('tgn-reports::layout/pdf-master')
+@extends('tgn-reports::layout/master-tarragona')
 
 @section('title')
 	_REPORT_NAME_
@@ -12,6 +12,7 @@
 
 	<div class="page">
 		START HERE
+		{!! $param1 !!}
     </div>
 
 @endsection

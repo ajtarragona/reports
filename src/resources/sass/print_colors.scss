@@ -38,7 +38,16 @@ $colors: (
 
 @each $key,$color in $colors {
 	.text-#{$key} { color:$color; }
-	.bg-#{$key} { background-color:$color; }
 	.border-#{$key} { border-color:$color; }
 	.b-#{$key} { border-color:$color; }
+	.bg-#{$key} { background-color:$color; }
+
+
+    @for $i from 1 through 10 {
+        .text-#{$key}-#{$i*10} { color:rgba($color,$i/10); }
+        .bg-#{$key}-#{$i*10} { background-color:rgba($color,$i/10); }
+        .border-#{$key}-#{$i*10} { border-color:rgba($color,$i/10); }
+        .b-#{$key}-#{$i*10} { border-color:rgba($color,$i/10); }
+        
+    }
 }

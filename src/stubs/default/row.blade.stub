@@ -1,6 +1,6 @@
 <tr>
-	@if($columns)
-		@foreach($columns as $column_key=>$column_value)
+	@if($row)
+		@foreach($row as $column_key=>$column_value)
 			<td>
 				<div>
 					{!! $column_value !!} 	

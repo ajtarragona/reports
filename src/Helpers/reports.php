@@ -54,21 +54,40 @@ if(!function_exists('uses_trait')){
 if(!function_exists('apply_value')){
 	function apply_value($value){
         if(Str::startsWith($value,"@")){
-            // dd("applyValue",$value);
-            $method=substr($value,1); //quito la arroba
-            $params=[];
-            // dd($method);
-            if(Str::contains($method,"(")){
-                $tmp=substr($method, 0,strpos($method,"("));
-                $params=trim(substr($method,strpos($method,"(")),"()");
-                $params=explode(",",$params);
-                $method=$tmp;
-                
-            }
             
             $faker = FakerFactory::create();
-            $value=$faker->{$method}(...$params) ?? $value;
+            
+            $callable=substr($value,1);
+            $expression='return $faker->'.$callable.';';
+
+            try{
+                $value = eval($expression);
+            }catch(Exception $e){
+                //si no existe la funcion no hace nada, devolvera el valor sin modificar
+            }
         }
         return $value;
+	}
+}
+
+
+if (! function_exists('json_pretty')) {
+	function json_pretty($string) {
+	 	return json_encode($string, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+	}
+}
+
+if (! function_exists('to_object')) {
+	function to_object($array) {
+		return json_decode(json_encode($array), FALSE);
+		
+	}
+}
+
+
+
+if (! function_exists('to_array')) {
+	function to_array($object) {
+	 	return json_decode(json_encode($object), true);
 	}
 }

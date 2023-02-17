@@ -5,9 +5,9 @@ namespace Ajtarragona\Reports\Traits;
 
 trait MultipleReport
 {
-    
-    abstract function columns();
-    abstract function rows();
+   
+    // abstract function columns();
+    // abstract function rows();
 
     
 

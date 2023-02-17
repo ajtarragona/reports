@@ -9,5 +9,14 @@ class _REPORT_CLASS_NAME_ extends BaseReport{
     public $short_name = "_REPORT_SLUG_";
     public $name = "_REPORT_NAME_";
 
-    
+    protected $parameters = [
+        
+        "param1" => [
+            "type"=>"text",
+            "label"=>"Param1",
+            "default_value"=>'@sentence',
+            "formatter"=>["strtoupper"]
+        ]
+        
+    ];
 }

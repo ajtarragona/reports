@@ -14,7 +14,7 @@
 </head>
 
 
-<body class="margin-{{ $margin ?? 'lg' }} size-{{ $pagesize ?? 'A4' }} orientation-{{ $orientation ?? 'portrait' }}">
+<body class="template-master-tarragona margin-{{ $margin ?? 'lg' }} size-{{ $pagesize ?? 'A4' }} orientation-{{ $orientation ?? 'portrait' }}">
 	<header >
 		<table class="fullwidth">
 			<tbody>
@@ -43,7 +43,7 @@
 					</td>
 					<td class=" text-right" >
 						@if(isset($pagination) && $pagination)
-							@include('tgn-reports::layout._pdf-pagination')
+							@include('tgn-reports::layout._pagination')
 						@endif
 					</td>
 				</tr>

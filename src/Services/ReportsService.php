@@ -74,19 +74,19 @@ class ReportsService{
         return str_replace(["/","\\"],DIRECTORY_SEPARATOR, self::BASE_PATH. ($more?(DIRECTORY_SEPARATOR.$more):''));
     }
 
+    public static function reportClassName($report_name){
+        return Str::studly($report_name). self::SUFFIX;
+    }
     public static function reportNamespace($report_name){
-        $className=Str::studly($report_name). self::SUFFIX;
-        return "\\".ReportsService::BASE_NAMESPACE."\\".$className; 
+        return "\\".ReportsService::BASE_NAMESPACE."\\".self::reportClassName($report_name); 
     }
 
     public static function reportClassPath($report_name){
-        $className=Str::studly($report_name). self::SUFFIX;
-        return self::reportNamespace($report_name)."\\".$className; 
+        return self::reportNamespace($report_name)."\\".self::reportClassName($report_name); 
     }
 
     public static function reportPath($report_name){
-        $className=Str::studly($report_name). self::SUFFIX;
-        return base_path(self::reportsBasePath($className));
+        return base_path(self::reportsBasePath(self::reportClassName($report_name)));
     }
     
     public static function getConfigFilePath($report_name){

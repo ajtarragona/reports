@@ -11,32 +11,19 @@ class _REPORT_CLASS_NAME_ extends BaseReport{
     public $name = "_REPORT_NAME_";
 
     use MultipleReport;
-
     
-    /**
-     * columns
-     *
-     * @return array
-     */
-    public function columns(){
-        return [
-            [
-                "name"=>"col1",
-                "label"=>"Columna 1"
-            ],
-            [
-                "name"=>"col2",
-                "label"=>"Columna 2"
-            ]
-        ];
-    }
-    
-    /**
-     * rows
-     *
-     * @return Collection
-     */
-    public function rows(){
+    protected $columns= [
+        "col1"=> [
+            "label"=>"Columna 1",
+            "default_value"=>'@word',
         
-    }
+        ],
+        "col2"=> [
+            "label"=>"Columna 2",
+            "default_value"=>'@sentence',
+        
+        ]
+    ];
+    
+    
 }

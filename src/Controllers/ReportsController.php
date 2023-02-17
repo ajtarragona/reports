@@ -14,16 +14,15 @@ class ReportsController extends Controller
         $reports=$repo->all();
         // dd($reports);
         $current_report=null;
-        $report_parameters=[]; //$repo->getSession($report_name);
 
-        $args=compact('reports','report_name','report_parameters');
+        $args=compact('reports','report_name');
 
         if($report_name){
             $current_report = $repo->find($report_name) ;
             $pagesizes=$current_report->getPagesizesCombo();
             $orientations=$current_report->getOrientationsCombo();
             $languages=$current_report->getLanguagesCombo();
-            $parameters=$current_report->getTemplateParameters();
+            $parameters=$current_report->getParameters();
             $args=array_merge($args, compact('current_report','pagesizes','orientations','languages','parameters'));
         }
 
@@ -33,33 +32,61 @@ class ReportsController extends Controller
     }
 
     
-    public function preview($report_name, Request $request, ReportsService $repo){
-        //  dd($request->all());
-        Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
 
+    public function preview($report_name, Request $request, ReportsService $repo){
+        // dump($request->all());
+        Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
         $report=$repo->find($report_name);
-        $parameters=$request->except(['_token','submit_action','num_rows','columns']);
-            
+        $collections= $report->getCollectionParameterNames();
+
+        $parameters=$request->except(array_merge(['_token','submit_action','num_rows','columns'], $collections));
+        // dd($parameters); 
+        $rows=null;
+
         if($report->multiple){
             // dd($request->all());
             $rows=[];
-            
-            for($i=0;$i<apply_value($request->num_rows);$i++){
-                $rows[]= array_map(function($value) use ($i){ 
-                    return $value;// ." ". ($i+1);
-                }, $request->columns);
+            if($request->num_rows){
+                for($i=0;$i<apply_value($request->num_rows);$i++){
+                    $rows[]= array_map(function($value) use ($i){ 
+                        return $value;// ." ". ($i+1);
+                    }, $request->columns);
+                }
             }
-            // dd($rows);
-            return $report->stream($parameters, $rows);
-        }else{
-            // dd($report);
-            // dd($parameters);
-            return $report->stream($parameters);
+
         }
+
+        //prepare collection parameters
+        if($collections){
+            foreach($collections as $collection_name){
+                $numrows=$request->{$collection_name}["num_rows"];
+                $columns=$request->{$collection_name}["columns"];
+                if($numrows && $columns){
+                    $rows=[];
+                    for($i=0;$i<apply_value($numrows);$i++){
+                        $rows[]= array_map(function($value) use ($i){ 
+                            return $value;// ." ". ($i+1);
+                        }, $columns);
+                    }
+                    $parameters[$collection_name] = $rows;
+                    
+                }
+            }
+        }
+        // dd($parameters);
+
+        return $report->stream($parameters, $rows);
         
         
     }
 
+
+    public function export($report_name, Request $request, ReportsService $repo){
+
+        $report=$repo->find($report_name);
+        return $report->export();
+        
+    }
    
     
 }

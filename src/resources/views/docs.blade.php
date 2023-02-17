@@ -29,12 +29,13 @@
     </ul>
     <h3>Paràmetres</h3>
     <p>Automàticament es detectaran totes les variables PHP que hi hagi a la plantilla.</p>
-    <p>Opcionalment, podem definir, a la classe del report, un array amb els paràmetres, per així especificar-ne el nom, el tipus de dada i els formatadors.</p>
+    <p>Opcionalment, podem definir, a la classe del report, un array amb els paràmetres, per així especificar-ne el nom, el tipus de dada, el valor per defecte i els formatadors.</p>
 <pre class="bg-dark text-light p-3 rounded"><code>protected $parameters = [
 
     "param_1" => [
         "type"=>"textarea",
-        "label"=>"Paràmetre 1"
+        "label"=>"Paràmetre 1",
+        "default_value"=>"Lalalala",
     ],
     "fecha" => [
         "type"=>"date",
@@ -53,7 +54,7 @@
     <li>formatData</li>
     <li>slugify</li>
 </ul>
-        
+      
 
 <h3>Multiples plantilles</h3>
     <p>
@@ -67,6 +68,11 @@
 
     <p>El que si que hi ha és una precedència en cas de conflicte. És a dir si existeixen les plantilles <code>template-a3</code> i <code>template-ca</code>, s'agafarà abans la primera.</p>
 
-
+<h3>Tests . Random parameters</h3>
+<p>Al tester podem passar les funcions de la llibreria <a href="https://github.com/fzaninotto/Faker" target="_blank">faker</a> com a paràmetres.</p>
+<p>Per exemple: <code>@word</code> o <code>@sentence</code> o <code>@numberBetween(1,10)</code> </p>      
+    
 
 </div>
+
+

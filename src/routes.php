@@ -15,5 +15,6 @@ Route::group(['prefix' => 'ajtarragona/reports','middleware' => ['reports-backen
 
     Route::post('/preview/{report_name}', 'Ajtarragona\Reports\Controllers\ReportsController@preview')->name('preview');
     Route::get('/{report_name?}', 'Ajtarragona\Reports\Controllers\ReportsController@home')->name('home');
+    Route::post('/export/{report_name}', 'Ajtarragona\Reports\Controllers\ReportsController@export')->name('export');
 
 });
