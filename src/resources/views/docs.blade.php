@@ -2,10 +2,10 @@
     <p>{{ __('tgn-reports::reports.Pots crear nous reports amb la comanda Artisan:') }}</p>
     <p class="bg-dark p-3 rounded">
         <code >
-        php artisan make:censat-report {report_name}
+        php artisan make:tgn-report {report_name}
         </code>
     </p>
-    <p>En trobaràs el codi font a la ruta <code>storage/app/reports</code></p>
+    <p>En trobaràs el codi font a la ruta <code>storage/app/report-templates</code></p>
     <p>Es generarà:</p>
     <ul>
         <li><code>config.php</code> Arxiu de configuració</li>

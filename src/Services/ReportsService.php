@@ -10,7 +10,7 @@ class ReportsService{
     
     const SUFFIX = "Report";
     const BASE_NAMESPACE = "Reports";
-    const BASE_PATH = "storage/app/reports";
+    const BASE_PATH = "storage/app/report-templates";
     const VIEWS_NAMESPACE = "tgn-report-";
 
    
@@ -48,7 +48,7 @@ class ReportsService{
         }catch(DirectoryNotFoundException $e){
             $files->makeDirectory(base_path(self::reportsBasePath()));
         }
-
+        // dump($report_names);
         foreach($report_names as $report_name){
             $config_path=$report_name.DIRECTORY_SEPARATOR."config.php";
             // dd($files->exists());
@@ -56,7 +56,9 @@ class ReportsService{
             if($files->exists($config_path)){
                 $config = include $config_path;
                 try{
+                    // dump($config['short_name']);
                     $report=$this->find($config['short_name']);
+                    // dd($report);
                     if($report){
                         $ret->push($report);
                     }

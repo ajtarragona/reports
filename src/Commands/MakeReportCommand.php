@@ -2,6 +2,7 @@
 
 namespace Ajtarragona\Reports\Commands;
 
+use Ajtarragona\Reports\Services\ReportsService;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Illuminate\Support\Str;
@@ -30,7 +31,6 @@ class MakeReportCommand extends Command
     protected $files;
     protected $options = [];
     
-    protected $reports_path = "storage/app/reports";
     protected $stubs_base_path = "stubs";
     protected $stub_templates = ['default'];
 
@@ -278,7 +278,7 @@ class MakeReportCommand extends Command
     }
 
     protected function reportPath($name=null){
-        return $this->reports_path . DIRECTORY_SEPARATOR. $this->folderName() . ($name?  (DIRECTORY_SEPARATOR.$name) : '' );
+        return ReportsService::BASE_PATH . DIRECTORY_SEPARATOR. $this->folderName() . ($name?  (DIRECTORY_SEPARATOR.$name) : '' );
     }
 
 

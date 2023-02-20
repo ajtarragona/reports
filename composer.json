@@ -21,7 +21,7 @@
     "autoload": {
         "psr-4": {
             "Ajtarragona\\Reports\\": "./src",
-            "Reports\\": "storage/app/reports/"
+            "Reports\\": "storage/app/report-templates"
         }
     },
     "extra": {
@@ -30,7 +30,7 @@
                 "Ajtarragona\\Reports\\ReportsServiceProvider"
             ],
             "aliases": {
-                "Reports" : "Ajtarragona\\Reports\\Facades\\Reports"
+                "TgnReports" : "Ajtarragona\\Reports\\Facades\\ReportsFacade"
             }
         }
     }

@@ -43,7 +43,7 @@ class BaseReport
     protected $engine = "dompdf";
 
     protected $protected_tags = ["num_rows","table_body","columns","rows","column_key","column_label","column_value", "loop","row"];
-
+    protected  $excluded_parameters=[];
     
     protected $config = [];
     protected $parameters = [];
@@ -177,7 +177,7 @@ class BaseReport
                         return trim($item,'$');
                     }, $matches[0]);
                     // dump($template_parameters);
-                    $template_parameters=array_diff($template_parameters, $this->protected_tags);
+                    $template_parameters=array_diff($template_parameters, array_merge($this->protected_tags, $this->excluded_parameters));
                     // dump($template_parameters);
                 }
                 // return $matches);

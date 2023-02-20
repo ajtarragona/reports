@@ -102,7 +102,7 @@ class ReportsServiceProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('reports-backend', \Ajtarragona\Reports\Middlewares\ReportsBackend::class);
 
          //defino facades
-        $this->app->bind('reports', function(){
+        $this->app->bind('tgn-reports', function(){
             return new \Ajtarragona\Reports\Services\ReportsService;
         });
         

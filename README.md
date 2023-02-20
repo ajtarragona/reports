@@ -16,7 +16,7 @@ Afegir classloading a  `composer.json`
 ```
 "autoload" : {
     "psr-4": {
-        "Reports\\": "storage/app/reports/"
+        "Reports\\": "storage/app/report-templates/"
 
 ```
 
@@ -34,10 +34,10 @@ activar `enable_php` a l'arxiu `config/dompdf.php`
 ## Create a new report
 Disposem de la comanda:
 ```
-php artisan make:censat-report {report_name}
+php artisan make:tgn-report {report_name}
 ```
 
-Això ens crearà un nou report amb el nom  `report_name` a la carpeta `storage/app/reports`.
+Això ens crearà un nou report amb el nom  `report_name` a la carpeta `storage/app/report-templates`.
 Es crearan 3 arxius:
 - config.php
 - NomReportReport.php

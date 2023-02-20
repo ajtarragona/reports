@@ -11,6 +11,6 @@ class ReportsFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'reports';
+        return 'tgn-reports';
     }
 }
