@@ -2,6 +2,7 @@
 namespace Ajtarragona\Reports\Rules;
 use Illuminate\Contracts\Validation\Rule;
 
+
 class ReportFileIsValid implements Rule
 
 {
