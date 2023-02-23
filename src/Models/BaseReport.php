@@ -65,13 +65,16 @@ class BaseReport
     public function name(){
         return $this->config('name', $this->name);
     }
+    public function icon(){
+        return $this->config('icon', null);
+    }
 
     public function description(){
         return $this->config('description');
     }
 
     public function getBasePath(){
-        return ReportsService::BASE_PATH;
+        return ReportsService::storagePath();
     }
 
 

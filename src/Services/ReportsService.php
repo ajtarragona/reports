@@ -10,7 +10,7 @@ class ReportsService{
     
     const SUFFIX = "Report";
     const BASE_NAMESPACE = "Reports";
-    const BASE_PATH = "storage/app/report-templates";
+    const BASE_PATH = "app/report-templates";
     const VIEWS_NAMESPACE = "tgn-report-";
 
    
@@ -71,9 +71,11 @@ class ReportsService{
         return $ret;
     }
 
-
+    public static function storagePath(){
+        return 'storage'.DIRECTORY_SEPARATOR.self::BASE_PATH;
+    }
     public static function reportsBasePath($more=null){
-        return str_replace(["/","\\"],DIRECTORY_SEPARATOR, self::BASE_PATH. ($more?(DIRECTORY_SEPARATOR.$more):''));
+        return str_replace(["/","\\"],DIRECTORY_SEPARATOR, self::storagePath(). ($more?(DIRECTORY_SEPARATOR.$more):''));
     }
 
     public static function reportClassName($report_name){

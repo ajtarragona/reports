@@ -278,7 +278,7 @@ class MakeReportCommand extends Command
     }
 
     protected function reportPath($name=null){
-        return ReportsService::BASE_PATH . DIRECTORY_SEPARATOR. $this->folderName() . ($name?  (DIRECTORY_SEPARATOR.$name) : '' );
+        return ReportsService::storagePath() . DIRECTORY_SEPARATOR. $this->folderName() . ($name?  (DIRECTORY_SEPARATOR.$name) : '' );
     }
 
 
