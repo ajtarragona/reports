@@ -1,8 +1,9 @@
 <ul class="list-group">
     <li class="list-group-item p-4 ">
-        <div class="d-flex justify-content-between align-items-end">
+        <div class="d-flex justify-content-between align-items-start">
             <h5 class="mb-1"><i class="bi bi-file-earmark-pdf"></i> {{$report->name()}}</h5>
             <div>
+                
                 <form method="post" action="{{route('tgn-reports.export',$report->short_name)}}">
                     @csrf
                     <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-download"></i> Download</button>
@@ -12,6 +13,21 @@
         @if($description=$report->description())
             <small class="text-sm text-muted mt-3 d-block">{!! $report->description() !!}</small>
         @endif
+    </li>
+    <li class="list-group-item d-flex align-items-start">
+        <small class="text-muted  w-50 ">Miniatura</small>
+        <div class="ms-2">
+            @if($report->hasThumbnail()) 
+                <div class="report-thumbnail mb-2">
+                    {!! $report->renderThumbnail() !!}
+                </div>
+            @endif
+            <form method="post" action="{{route('tgn-reports.generateThumbnail',$report->short_name)}}">
+                @csrf
+                <button class="btn btn-sm btn-light " ><i class="bi bi-image"></i> {{$report->hasThumbnail()?'Regenerar':'Generar'}}</button>
+            </form>
+        </div>
+
     </li>
     <li class="list-group-item d-flex align-items-start">
         <small class="text-muted  w-50 ">Nom</small>

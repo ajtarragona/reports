@@ -15,6 +15,7 @@
 
     <hr/>
     <h1>Docs</h1>
+    
     <h3>Configuració</h3>
     <p>Pots definir la configuració del report a l'arxiu <code>config.php</code>.</p>
     <ul>

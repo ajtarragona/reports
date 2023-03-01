@@ -10,7 +10,8 @@ use \Artisan;
 class ReportsController extends Controller
 {
     public function home($report_name=null, ReportsService $repo){
-
+        Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
+        
         $reports=$repo->all();
         // dd($reports);
         $current_report=null;
@@ -32,6 +33,28 @@ class ReportsController extends Controller
     }
 
     
+
+    public function thumbnail($report_name, Request $request, ReportsService $repo){
+        $report=$repo->find($report_name);
+        $path=$report->getThumbnail();
+        
+        return response()->streamDownload(function() use ($path) {
+            echo file_get_contents($path);
+            
+        }, $report_name.".png", ['content-type' => 'image/png']);
+
+
+
+    }
+
+    
+    public function generateThumbnail($report_name, Request $request, ReportsService $repo){
+        $report=$repo->find($report_name);
+        $report->generateThumbnail();
+        return redirect()->back();
+    }
+
+
 
     public function preview($report_name, Request $request, ReportsService $repo){
         // dump($request->all());

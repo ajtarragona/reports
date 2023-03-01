@@ -31,6 +31,7 @@ return [
     'default_language' => 'ca',
     'default_pagesize' => 'A4',
     'default_orientation' => 'portrait',
-    'default_margin' => 'lg'
+    'default_margin' => 'lg',
+    'gs_path' => 'gswin64c.exe'
 ];
 

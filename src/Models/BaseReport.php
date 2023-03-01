@@ -16,6 +16,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Zip;
 use ZipArchive;
+use Imagick;
 
 class BaseReport
 {
@@ -609,7 +610,97 @@ class BaseReport
 
     }
 
+
+    public function hasThumbnail(){
+        return file_exists($this->getThumbnail());
+    }
     
+    public function getThumbnail(){
+        return $this->getPath().DIRECTORY_SEPARATOR."thumbnail.jpg";
+
+    }
+
+
+    public function renderThumbnail(){
+        if($this->hasThumbnail()){
+            // $path=$this->getThumbnail();
+            // dump($path);
+            return '<img src="'. route('tgn-reports.thumbnail',$this->short_name) .'" class="img-fluid" title="Thumbnail '.$this->name().'"/>';
+        }
+
+    }
+
+    public function generateThumbnail(){
+        $parameters=[];
+        $rows=null;
+        $collections= $this->getCollectionParameterNames();
+
+        $params=$this->getParameters();
+        foreach($params as $key=>$param){
+            if(!in_array($key,$collections)){
+                $parameters[$key] = $param["default_value"] ?? null;
+            }
+        }
+
+        $rows=null;
+
+        if($this->multiple){
+            // dd($request->all());
+            $rows=[];
+            $cols=$this->getColumns();
+            $columns=[];
+            foreach($cols as $key=>$col){
+                $columns[$key] = $col["default_value"] ?? null;
+            }
+            for($i=0;$i<rand(10,20);$i++){
+                $rows[]= array_map(function($value) use ($i){ 
+                    return $value;// ." ". ($i+1);
+                }, $columns);
+            }
+
+        }
+
+        //prepare collection parameters
+        if($collections){
+            foreach($collections as $collection_name){
+                $numrows=rand(2,5);
+                $col_columns=$params[$collection_name]["columns"] ?? [];
+                if($numrows && $col_columns){
+                    $rows=[];
+                    for($i=0;$i<$numrows;$i++){
+                        $rows[]= array_map(function($value) use ($i){ 
+                            return $value["default_value"] ?? null;// ." ". ($i+1);
+                        }, $col_columns);
+                    }
+                    $parameters[$collection_name] = $rows;
+                    
+                }
+            }
+        }
+
+        // dd($parameters);
+        $gs_path=config('reports.gs_path');
+        $path=$this->saveTmp($parameters, $rows);
+        $path=storage_path('app'.DIRECTORY_SEPARATOR.$path);
+        $target=$this->getThumbnail();
+        $source=$path;
+        $command="$gs_path -o $target -sDEVICE=jpeg -dLastPage=1 -dJPEGQ=100  $source";
+
+        // dd($command);
+        exec($command);
+
+
+        // $path=$this->saveTmp([], []);
+        // $path=storage_path('app'.DIRECTORY_SEPARATOR.$path);
+        // // dd($path);
+        // $imagick=new Imagick($path.'[0]');
+        // $imagick->setImageFormat('png');
+        // $imagick->setResolution (512,512);
+        // echo $imagick;
+
+        // $imagick->writeImages($this->getThumbnail());
+
+    }
     
 
 }
