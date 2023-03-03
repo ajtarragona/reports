@@ -62,7 +62,9 @@ class BaseReport
 
     }
 
-
+public function isMultiple(){
+    return $this->multiple;
+}
     public function name(){
         return $this->config('name', $this->name);
     }
