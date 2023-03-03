@@ -32,6 +32,6 @@ return [
     'default_pagesize' => 'A4',
     'default_orientation' => 'portrait',
     'default_margin' => 'lg',
-    'gs_path' => 'gswin64c.exe'
+    'gs_path' => env('GHOSTSCRIPT_PATH','gswin64c.exe') // path to gs executable
 ];
 

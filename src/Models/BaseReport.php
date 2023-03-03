@@ -49,6 +49,7 @@ class BaseReport
     protected $config = [];
     protected $parameters = [];
     protected $columns = [];
+    protected $rows = [];
 
     
     public function __construct()
@@ -454,11 +455,21 @@ public function isMultiple(){
 
     
 
-    private function prepareMultipleBody(&$parameters, $rows){
+    public function getRows(){
+        return $this->rows;
+    }
+
+    
+    public function addRow($row=[]){
+        $this->rows[]=$row;
+    }
+
+    private function prepareMultipleBody(&$parameters, $rows=null){
         $ret="";
 
-        
-        $num_rows=count($rows);
+        if($rows) $this->rows=$rows;
+
+        $num_rows=count($this->rows);
 
         $columns=$this->getColumnsNameCombo();
 
@@ -466,9 +477,9 @@ public function isMultiple(){
 
         $ret.=$this->view('header', $parameters)->render();
 
-        if($rows){
+        if($this->rows){
             
-            foreach($rows as $i=>$row){
+            foreach($this->rows as $i=>$row){
                  
                 $values=$this->getColumnsValues($row);
                 // dd($values);
@@ -480,7 +491,7 @@ public function isMultiple(){
                         "index"=>$i+1,
                         "index_0"=>$i,
                         "first"=>$i==0,
-                        "last"=> ($i== (count($rows)-1))
+                        "last"=> ($i== (count($this->rows)-1))
                     ])
                 ]);
                 // dd($args);
@@ -502,7 +513,7 @@ public function isMultiple(){
      * General el PDF
      * Devuelve el contenido binario
      */
-    private function doGenerate($parameters=[], $rows=[]){
+    private function doGenerate($parameters=[], $rows=null){
  
         $parameters=$this->prepareParameters($parameters);
         // dd($rows);
@@ -634,7 +645,6 @@ public function isMultiple(){
 
     public function generateThumbnail(){
         $parameters=[];
-        $rows=null;
         $collections= $this->getCollectionParameterNames();
 
         $params=$this->getParameters();
@@ -644,20 +654,19 @@ public function isMultiple(){
             }
         }
 
-        $rows=null;
-
+        
         if($this->multiple){
             // dd($request->all());
-            $rows=[];
             $cols=$this->getColumns();
             $columns=[];
             foreach($cols as $key=>$col){
                 $columns[$key] = $col["default_value"] ?? null;
             }
             for($i=0;$i<rand(10,20);$i++){
-                $rows[]= array_map(function($value) use ($i){ 
+                $row=array_map(function($value) use ($i){ 
                     return $value;// ." ". ($i+1);
                 }, $columns);
+                $this->addRow($row);
             }
 
         }
@@ -668,21 +677,21 @@ public function isMultiple(){
                 $numrows=rand(2,5);
                 $col_columns=$params[$collection_name]["columns"] ?? [];
                 if($numrows && $col_columns){
-                    $rows=[];
+                    $collection_rows=[];
                     for($i=0;$i<$numrows;$i++){
-                        $rows[]= array_map(function($value) use ($i){ 
+                        $collection_rows[]= array_map(function($value) use ($i){ 
                             return $value["default_value"] ?? null;// ." ". ($i+1);
                         }, $col_columns);
                     }
-                    $parameters[$collection_name] = $rows;
+                    $parameters[$collection_name] = $collection_rows;
                     
                 }
             }
         }
-
+        // dd($this->rows);
         // dd($parameters);
         $gs_path=config('reports.gs_path');
-        $path=$this->saveTmp($parameters, $rows);
+        $path=$this->saveTmp($parameters);
         $path=storage_path('app'.DIRECTORY_SEPARATOR.$path);
         $target=$this->getThumbnail();
         $source=$path;
