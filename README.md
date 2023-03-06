@@ -1,10 +1,7 @@
 # Reports
 Package per fer reports en PDF
 
-<a href="https://packagist.org/packages/ajtarragona/reports"><img src="https://poser.pugx.org/ajtarragona/reports/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/ajtarragona/reports"><img src="https://poser.pugx.org/ajtarragona/reports/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/ajtarragona/reports"><img src="https://poser.pugx.org/ajtarragona/reports/license.svg" alt="License"></a>
-
+[![Latest Stable Version](http://poser.pugx.org/ajtarragona/reports/v)](https://packagist.org/packages/ajtarragona/reports) [![Total Downloads](http://poser.pugx.org/ajtarragona/reports/downloads)](https://packagist.org/packages/ajtarragona/reports) [![Latest Unstable Version](http://poser.pugx.org/ajtarragona/reports/v/unstable)](https://packagist.org/packages/ajtarragona/reports) [![License](http://poser.pugx.org/ajtarragona/reports/license)](https://packagist.org/packages/ajtarragona/reports) [![PHP Version Require](http://poser.pugx.org/ajtarragona/reports/require/php)](https://packagist.org/packages/ajtarragona/reports)
 
 ## Requirements
     Laravel >= 6.0
