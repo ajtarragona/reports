@@ -1,6 +1,10 @@
 # Reports
 Package per fer reports en PDF
 
+<a href="https://packagist.org/packages/ajtarragona/reports"><img src="https://poser.pugx.org/ajtarragona/reports/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/ajtarragona/reports"><img src="https://poser.pugx.org/ajtarragona/reports/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/ajtarragona/reports"><img src="https://poser.pugx.org/ajtarragona/reports/license.svg" alt="License"></a>
+
 
 ## Requirements
     Laravel >= 6.0
