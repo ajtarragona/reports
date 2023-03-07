@@ -23,5 +23,6 @@ return [
         'ca'=> 'Català',
         'es'=> 'Castellà',
     ],
-    'Page' => "Pàgina"
+    'Page' => "Pàgina",
+    "Report file is invalid" => "L'arxiu ZIP no és un report vàlid"
 ];

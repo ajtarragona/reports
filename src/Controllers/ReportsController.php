@@ -61,7 +61,7 @@ class ReportsController extends Controller
         Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
         $report=$repo->find($report_name);
         $collections= $report->getCollectionParameterNames();
-
+// dd($collections);
         $parameters=$request->except(array_merge(['_token','submit_action','num_rows','columns'], $collections));
         // dd($parameters); 
         $rows=null;
@@ -82,6 +82,8 @@ class ReportsController extends Controller
         //prepare collection parameters
         if($collections){
             foreach($collections as $collection_name){
+                // $parameters[$collection_name] =  $report->prepareCollection($collection_name, $request->{$collection_name}["num_rows"] );
+                
                 $numrows=$request->{$collection_name}["num_rows"];
                 $columns=$request->{$collection_name}["columns"];
                 if($numrows && $columns){

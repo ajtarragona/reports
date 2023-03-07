@@ -39,11 +39,13 @@ class BaseReport
 
     protected $template_name="template";
     protected $template_extension=".blade.php";
+    protected $template_attributes=[];
     
     
     protected $engine = "dompdf";
 
     protected $protected_tags = ["num_rows","table_body","columns","rows","column_key","column_label","column_value", "loop","row"];
+    protected  $autodetect_parameters=true;
     protected  $excluded_parameters=[];
     
     protected $config = [];
@@ -167,7 +169,7 @@ public function isMultiple(){
     
     public function getAutodetectedTemplateParameters($paths=null){
         
-            
+        if(!$this->autodetect_parameters) return [];    
        
         // dd($paths);
         $parameters=[];
@@ -207,7 +209,28 @@ public function isMultiple(){
     public function getCollectionParameterNames(){
         return collect($this->getParameters())->where('type','collection')->keys()->toArray();
     }
-    public function getParameters(){
+
+
+    public function getFunctionParameters(){
+        $ret=collect($this->parameters)->filter(function($parameter){
+            return isset($parameter["function"]);
+        })->toArray();
+        return $ret;
+    }
+
+    public function getCollectionFunctionParameters($param_name){
+        
+        $ret=[];
+        if(isset($this->parameters[$param_name]) && $this->parameters[$param_name]["type"]=="collection" && $this->parameters[$param_name]["columns"]){
+            $ret=collect($this->parameters[$param_name]["columns"])->filter(function($parameter){
+                return isset($parameter["function"]);
+            })->toArray();
+        }
+        return $ret;
+    }
+
+
+    public function getParameters($exclude_functions=true){
         $paths=[$this->getTemplatePath()];
         if($this->multiple){
             $paths=array_merge([
@@ -215,14 +238,38 @@ public function isMultiple(){
                 $this->getPath().DIRECTORY_SEPARATOR.'header'.$this->template_extension,
             ], $paths );
         }
-        $parameters=$this->getAutodetectedTemplateParameters($paths);
+
         
         $ret=$this->parameters ?? [];
-        foreach($parameters as $key){
+
+        $ret=collect($ret);
+        
+        if($exclude_functions){
+            $ret=$ret->filter(function($parameter){
+                //quito lo parametros function
+                return !isset($parameter["function"]);
+            })->map(function($parameter){
+                //quito lo parametros function de las colecciones
+                if($parameter["type"]=="collection"){
+                    $parameter["columns"]=collect($parameter["columns"])->filter(function($parameter){
+                        return !isset($parameter["function"]);
+                    })->toArray();
+                }
+                return $parameter;
+            });
+        }
+
+        $ret=$ret->toArray();
+        
+
+        $auto_parameters= $this->getAutodetectedTemplateParameters($paths);
+        foreach($auto_parameters as $key){
             if(!in_array($key, array_keys($this->parameters))){
                 $ret[$key] = ["type"=>"text","label"=>$key ];
             }
         }
+            
+        
         return $ret;
     }
 
@@ -268,7 +315,8 @@ public function isMultiple(){
     /**
      * Inicializa los parametros que se le pasarán a la vista previa
      */
-    public function prepareParameters($values=[]){
+    public function prepareParameters($values=[], $exclude_functions=true){
+        // dump($values);
         
         
         if(isset($values["orientation"])) $this->orientation =  $values["orientation"];
@@ -279,27 +327,42 @@ public function isMultiple(){
 
            
         // dump($parameters);
-        $parameters = $this->getParameters();
+        $parameters = $this->getParameters($exclude_functions);
         
-        // dd($parameters, $values);
+        // dd($parameters);
         
         $ret=[];
 
+        // $functions=[];
         /** inicializo los parametros que no tengan valor con un tag */
         foreach($parameters as $parameter_name=>$parameter){
             if($parameter["type"]=="boolean"){
                 $ret[$parameter_name] = ($values[$parameter_name]??null) ? true: false;
             }elseif($parameter["type"]=="collection"){
                 $value=$values[$parameter_name]??null;
+                $collection_functions =$this->getCollectionFunctionParameters($parameter_name);
                 // dump($value);
                 if($value){
                     foreach($value as $i=>$row){
                         foreach($row as $key=>$col_value){
-                            $value[$i][$key]=$this->prepareValue($col_value, $key, $parameter);
+                            $row[$key]=$this->prepareValue($col_value, $key, $parameter);
                         }
+                        
+                        
+                        //añado valores de funciones
+                         if($collection_functions){
+                            foreach($collection_functions as $col_parameter_name=>$col_param_function){
+                                // dump($param_function["function"], $this->{$param_function["function"]}($row));
+                                $row[$col_parameter_name] = $this->{$col_param_function["function"]}($row);
+
+                            }
+                        }
+                        $value[$i] = $row;
+                        
+                        
                     }
                     // dd($value);
-                    $values[$parameter_name]=$value;
+                    // $values[$parameter_name]=$value;
                 }
                 $ret[$parameter_name] = $value;
             }else{
@@ -317,6 +380,16 @@ public function isMultiple(){
         $ret['margin'] = $this->margin;
         $ret['pagination'] = $this->pagination;
 // dd($ret);
+        $this->template_attributes= $ret;
+
+        $functions =$this->getFunctionParameters();
+        foreach($functions as $parameter_name=>$param_function){
+            $ret[$parameter_name] = $this->{$param_function["function"]}();
+
+        }
+        $this->template_attributes= $ret;
+
+        // dd($ret);
         return $ret;
     }
 
@@ -472,13 +545,13 @@ public function isMultiple(){
         $num_rows=count($this->rows);
 
         $columns=$this->getColumnsNameCombo();
-
+// dd($columns);
         $parameters= array_merge($parameters, compact('columns','num_rows'));
 
         $ret.=$this->view('header', $parameters)->render();
 
         if($this->rows){
-            
+            // dd($function_cols);
             foreach($this->rows as $i=>$row){
                  
                 $values=$this->getColumnsValues($row);
@@ -494,6 +567,8 @@ public function isMultiple(){
                         "last"=> ($i== (count($this->rows)-1))
                     ])
                 ]);
+
+                
                 // dd($args);
                 $ret.=$this->view('row', $args )->render();
                
@@ -515,8 +590,8 @@ public function isMultiple(){
      */
     private function doGenerate($parameters=[], $rows=null){
  
-        $parameters=$this->prepareParameters($parameters);
-        // dd($rows);
+        $parameters=$this->prepareParameters($parameters, false);
+        // dd($parameters);
         
         if($this->multiple) $this->prepareMultipleBody($parameters, $rows);
         
@@ -529,51 +604,60 @@ public function isMultiple(){
             return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
         
         }catch(Exception $e){
-            // dd($e);
+            dd($e);
         }
         
     }
 
 
+    public function getFunctionColumns(){
+        $ret=collect($this->getColumns(false))->filter(function($parameter){
+            return isset($parameter["function"]);
+        })->toArray();
+        return $ret;
+    }
+
     public function getColumnsValues($row){
-        
-        return collect($this->getColumns())->map(function($column, $key) use ($row){
+        $function_cols=$this->getFunctionColumns();
+            
+        $row=collect($this->getColumns())->map(function($column, $key) use ($row){
         
             $ret= $this->applyValue($row[$key], $column);
             // dd($ret);
             return $ret;
         })->toArray();
+
+        if($function_cols){
+            foreach($function_cols as $row_parameter_name=>$row_param_function){
+                $row[$row_parameter_name] = $this->{$row_param_function["function"]}($row);
+            }
+        }
+        return $row;
     }
+
     public function getColumnsNameCombo(){
         // dd($report_columns);
         return array_map(function($column){
             return $column["label"];
-        }, $this->getColumns());
+        }, $this->getColumns(false));
     }
 
-    public function getColumns(){
+    public function getColumns($exclude_functions=true){
         if(uses_trait($this, 'Ajtarragona\Reports\Traits\MultipleReport')){
 
             $paths=[
                 $this->getPath().DIRECTORY_SEPARATOR.'row'.$this->template_extension,
             ];
             
-            $auto_columns= $this->getAutodetectedTemplateParameters($paths);
             // dd($auto_columns);
             $columns = $this->columns ?? [];
 
-            // añado las columnas autodetectadas      
-            foreach($auto_columns as $key){
-                if(!in_array($key, array_keys($this->columns??[]))){
-                    $columns[$key] = ["type"=>"text", "label"=>$key ];
-                }
-            }
-
-             $report_params=array_keys($this->getParameters());
+            $report_params=array_keys($this->getParameters(true));
             
             //les añado type y label si no lo tienen            
             foreach($columns as $key=>$column){
-                if(in_array($key, $report_params)){
+                // dump($column);
+                if(in_array($key, $report_params) || ($exclude_functions && isset($column["function"]))){
                     //le quito los parametros generales del report
                     unset($columns[$key]);
                 }else{
@@ -581,6 +665,13 @@ public function isMultiple(){
                 }
             }
             
+            // añado las columnas autodetectadas      
+            $auto_columns= $this->getAutodetectedTemplateParameters($paths);
+            foreach($auto_columns as $key){
+                if(!in_array($key, array_keys($this->columns??[]))){
+                    $columns[$key] = ["type"=>"text", "label"=>$key ];
+                }
+            }
            
             return $columns;
         }
@@ -647,7 +738,8 @@ public function isMultiple(){
         $parameters=[];
         $collections= $this->getCollectionParameterNames();
 
-        $params=$this->getParameters();
+        $params=$this->getParameters(true);
+        
         foreach($params as $key=>$param){
             if(!in_array($key,$collections)){
                 $parameters[$key] = $param["default_value"] ?? null;
@@ -670,15 +762,16 @@ public function isMultiple(){
             }
 
         }
-
+        // dd($params);
         //prepare collection parameters
         if($collections){
             foreach($collections as $collection_name){
-                $numrows=rand(2,5);
+                $numrows=rand(2,10);
                 $col_columns=$params[$collection_name]["columns"] ?? [];
                 if($numrows && $col_columns){
                     $collection_rows=[];
                     for($i=0;$i<$numrows;$i++){
+                        // dd($col_columns);
                         $collection_rows[]= array_map(function($value) use ($i){ 
                             return $value["default_value"] ?? null;// ." ". ($i+1);
                         }, $col_columns);

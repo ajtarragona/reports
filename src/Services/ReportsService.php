@@ -5,6 +5,8 @@ use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
+use ZipArchive;
+use File;
 
 class ReportsService{
     
@@ -129,6 +131,65 @@ class ReportsService{
         session(['parameters_'.$report_name => null]);
     }
 
+
+   
+    
+
+    public static function getReportConfig($report_file){
+        $zip = new ZipArchive;
+        $status = $zip->open($report_file->getRealPath());
+        if ($status !== true) {
+            return [];
+        }else{
+
+            $storageDestinationPath= storage_path('app'.DIRECTORY_SEPARATOR.'tmp');
+            $zip->extractTo($storageDestinationPath);
+            $zip->close();
+            $config_path=$storageDestinationPath . DIRECTORY_SEPARATOR.basename($report_file->getClientOriginalName(), ".zip").DIRECTORY_SEPARATOR."config.php";
+            try{
+                return include $config_path;
+            }catch(Exception $e){
+                return [];
+            }
+        }
+    }
+
+
+    public static function getReportShortName($report_file){
+        $config= self::getReportConfig($report_file);
+        return $config["short_name"] ?? null;
+    }
+
+
+    public static function reportExists($report_file){
+        $name=basename($report_file->getClientOriginalName(), ".zip");
+        // dump($name);
+        $storageDestinationPath= storage_path(ReportsService::BASE_PATH);
+        return File::exists( $storageDestinationPath.DIRECTORY_SEPARATOR.$name);
+    }
+
+
+    /** Uploadea un nuevo report */
+    public static function uploadReport($report_file){
+        // dd($report_file);
+        $zip = new ZipArchive;
+        $files = new Filesystem;
+
+        $status = $zip->open($report_file->getRealPath());
+        if ($status !== true) {
+            throw new Exception($status);
+        }else{
+            // dd(ReportsService::BASE_PATH);
+            $storageDestinationPath= storage_path(self::BASE_PATH);
+            // dd($storageDestinationPath); 
+            if (!$files->exists( $storageDestinationPath)) {
+                $files->makeDirectory($storageDestinationPath, 0755, true);
+            }
+            $zip->extractTo($storageDestinationPath);
+            $zip->close();
+        }
+        
+    }
 
     
 }

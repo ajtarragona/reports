@@ -10,17 +10,17 @@ trait ReportFormatters
 {
     
     public function formatData($value, $format='d/m/Y'){
-       
+        // dd($value);
         if($value){
             if($value instanceof Carbon){
                 return $value->translatedFormat($format);
             }else {
                 try{
-                    $date=new Carbon($value);
-                    // dump($date->locale());
+                    $date = new Carbon($value);
+                    dump($date->locale());
                     return $date->translatedFormat($format);
                 }catch(Exception $e){
-
+                    dd($e);
                 }
             }
         }

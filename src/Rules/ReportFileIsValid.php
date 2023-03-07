@@ -1,7 +1,8 @@
 <?php
 namespace Ajtarragona\Reports\Rules;
-use Illuminate\Contracts\Validation\Rule;
 
+use Ajtarragona\Reports\Services\ReportsService;
+use Illuminate\Contracts\Validation\Rule;
 
 class ReportFileIsValid implements Rule
 
@@ -16,13 +17,15 @@ class ReportFileIsValid implements Rule
     
     public function passes($attribute, $value)
     {
-        
+        // dd($value);
         //comprobar que es un zip
         //comprobar que existe el archivo de config
-        //comprobar que existe short_name en el archivo config
+        $config=ReportsService::getReportConfig($value);
+        if(!$config) return false;
 
+        //comprobar que existe short_name en el archivo config
+        return array_key_exists("short_name", $config);
         
-        return true;
         
     }
 
