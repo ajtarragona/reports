@@ -28,8 +28,10 @@ table{
 			}
 		}
 
-		tbody tr{
-		
+		thead th,
+		tbody th{
+			background-color: $gray-200;
+				
 		}
 		
 		tbody td,
@@ -40,6 +42,13 @@ table{
 			
 			>div{
 				padding:10px 8px;
+			}
+		}
+
+		&.table-compact{
+			font-size:.9em;
+			>div{
+				padding:5px 5px;
 			}
 		}
 
@@ -60,7 +69,6 @@ table{
 			}
 
 			tbody th{
-				background-color: $muted;
 				border-bottom:1px solid $borders-color;
 				font-weight: bold;
 			}
@@ -90,7 +98,6 @@ table{
 			}
 
 			tbody th{
-				background-color: $muted;
 				border-bottom:1px solid $borders-color;
 				border-right:1px solid $borders-color;
 				font-weight: bold;

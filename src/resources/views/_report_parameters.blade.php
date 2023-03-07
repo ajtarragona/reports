@@ -22,7 +22,14 @@
 
         
         <div class="collapse " id="all-parameters">
+           
             <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-primary">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input " type="checkbox" value="1" name="regenerate_thumbnail" role="switch" id="parameter-regenerate_thumbnail" >
+                        <label class="form-check-label" for="parameter-regenerate_thumbnail">Regenerar miniatura</label>
+                    </div>
+                </li>
                 @if($pagesizes)
                     @if(count($pagesizes)>1)
                     

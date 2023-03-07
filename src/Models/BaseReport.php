@@ -25,6 +25,7 @@ class BaseReport
 
     public $short_name = "";
     public $name = "";
+    public $preview_mode = false;
     
     public $pagesize;
     public $orientation;
@@ -297,9 +298,10 @@ public function isMultiple(){
         if(is_string($value)){
             if(Str::startsWith($value,"@")){
                 $value=apply_value($value);
-            }else{
-                if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
             }
+            
+            if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
+            
         }
 
         return $value;
@@ -309,9 +311,12 @@ public function isMultiple(){
             return $this->applyValue($value, $parameter);
             
         }else{
-            return "<code>".strtoupper($parameter_name)."</code>";
+            return $this->preview_mode ? "<code>".strtoupper($parameter_name)."</code>" : "";
         }
     }
+
+
+
     /**
      * Inicializa los parametros que se le pasarán a la vista previa
      */
@@ -734,52 +739,60 @@ public function isMultiple(){
 
     }
 
-    public function generateThumbnail(){
-        $parameters=[];
-        $collections= $this->getCollectionParameterNames();
-
-        $params=$this->getParameters(true);
-        
-        foreach($params as $key=>$param){
-            if(!in_array($key,$collections)){
-                $parameters[$key] = $param["default_value"] ?? null;
-            }
-        }
-
-        
-        if($this->multiple){
-            // dd($request->all());
-            $cols=$this->getColumns();
-            $columns=[];
-            foreach($cols as $key=>$col){
-                $columns[$key] = $col["default_value"] ?? null;
-            }
-            for($i=0;$i<rand(10,20);$i++){
-                $row=array_map(function($value) use ($i){ 
-                    return $value;// ." ". ($i+1);
-                }, $columns);
-                $this->addRow($row);
-            }
-
-        }
-        // dd($params);
-        //prepare collection parameters
-        if($collections){
-            foreach($collections as $collection_name){
-                $numrows=rand(2,10);
-                $col_columns=$params[$collection_name]["columns"] ?? [];
-                if($numrows && $col_columns){
-                    $collection_rows=[];
-                    for($i=0;$i<$numrows;$i++){
-                        // dd($col_columns);
-                        $collection_rows[]= array_map(function($value) use ($i){ 
-                            return $value["default_value"] ?? null;// ." ". ($i+1);
-                        }, $col_columns);
-                    }
-                    $parameters[$collection_name] = $collection_rows;
-                    
+    public function generateThumbnail($parameters=null, $rows=null){
+        $this->preview_mode=true;
+        if(!$parameters){
+            $parameters=[];
+            $collections= $this->getCollectionParameterNames();
+            $params=$this->getParameters(true);
+            
+            foreach($params as $key=>$param){
+                if(!in_array($key,$collections)){
+                    $parameters[$key] = $param["default_value"] ?? null;
                 }
             }
+
+            
+            
+            // dd($params);
+            //prepare collection parameters
+            if($collections){
+                foreach($collections as $collection_name){
+                    $numrows=rand(2,10);
+                    $col_columns=$params[$collection_name]["columns"] ?? [];
+                    if($numrows && $col_columns){
+                        $collection_rows=[];
+                        for($i=0;$i<$numrows;$i++){
+                            // dd($col_columns);
+                            $collection_rows[]= array_map(function($value) use ($i){ 
+                                return $value["default_value"] ?? null;// ." ". ($i+1);
+                            }, $col_columns);
+                        }
+                        $parameters[$collection_name] = $collection_rows;
+                        
+                    }
+                }
+            }
+        }
+
+        if($this->multiple){
+            if(!$rows){
+                // dd($request->all());
+                $cols=$this->getColumns();
+                $columns=[];
+                foreach($cols as $key=>$col){
+                    $columns[$key] = $col["default_value"] ?? null;
+                }
+                for($i=0;$i<rand(10,20);$i++){
+                    $row=array_map(function($value) use ($i){ 
+                        return $value;// ." ". ($i+1);
+                    }, $columns);
+                    $this->addRow($row);
+                }
+            }else{
+               foreach($rows as $row) $this->addRow($row);
+            }
+
         }
         // dd($this->rows);
         // dd($parameters);

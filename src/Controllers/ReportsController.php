@@ -60,6 +60,8 @@ class ReportsController extends Controller
         // dump($request->all());
         Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
         $report=$repo->find($report_name);
+        $report->preview_mode=true;
+        
         $collections= $report->getCollectionParameterNames();
 // dd($collections);
         $parameters=$request->except(array_merge(['_token','submit_action','num_rows','columns'], $collections));
@@ -99,7 +101,7 @@ class ReportsController extends Controller
             }
         }
         // dd($parameters);
-
+        if($request->regenerate_thumbnail) $report->generateThumbnail($parameters, $rows);
         return $report->stream($parameters, $rows);
         
         
