@@ -57,6 +57,55 @@
 </ul>
       
 
+<h3>Paràmetres multiples</h3>
+<p>Quan definim un paràmetre podem especificar que és una col·lecció.</p>
+<pre class="bg-dark text-light p-3 rounded"><code>protected $parameters = [
+
+    "files" => [
+        "type"=>"collection",
+        "label"=>"Files",
+        "columns"=>[
+            "col1"=>[
+                "type"=>"number",
+                "label"=>"Col 1",
+            ],
+            "col2"=>[
+                "type"=>"number",
+                "label"=>"Col 2",
+            ]
+        ]
+    ]
+];
+</code></pre>
+<h3>Paràmetres calculats</h3>
+<p>Quan definim un paràmetre, hi podem especificar una funció a través de la qual obtindrem el valor.</p>
+<p>Aquesta és una funció que estarà definida a la nostra classe. </p>
+<p>La resta de paràmetres estan disponibles amb l'atribut <code>$this->template_attributes</code>. </p>
+
+<pre class="bg-dark text-light p-3 rounded"><code>protected $parameters = [
+
+    "numero" => [
+        "type"=>"number",
+        "label"=>"Numero"
+    ],
+    "doble" => [
+        "type"=>"number",
+        "label"=>"Fecha",
+        "function'=>'calculaElDoble'
+    ]
+    ...
+
+    public function calculaElDoble(){
+        return $this->template_attributes["numero"] * 2 ;
+    }
+</code></pre>
+
+<p>Si el paràmetre es una columna (ja sigui d'una col·lecció o d'un report multiple) la funció rebrà com a paràmetre la fila actual. </p>
+<pre class="bg-dark text-light p-3 rounded"><code>public function calculaElDoble($row){
+    return $row["col1"] * 2 ;
+}
+</code></pre>
+
 <h3>Multiples plantilles</h3>
     <p>
         Pot haver plantilles diferents segons la mida de pàgina, orientació i idioma.
