@@ -295,14 +295,17 @@ public function isMultiple(){
 
 
     protected function applyValue($value, $parameter){
-        if(is_string($value)){
-            if(Str::startsWith($value,"@")){
-                $value=apply_value($value);
-            }
-            
-            if(isset($parameter["formatter"])) $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
-            
+        // dump($parameter,$value);
+        if(is_string($value) &&Str::startsWith($value,"@")){
+            $value=apply_value($value);
         }
+        
+        if(isset($parameter["formatter"])){
+            // dump($value, $parameter);
+            $value=$this->applyFormatter($value, $parameter["formatter"], $parameter["formatter_parameters"]??[]);
+        }
+            
+        
 
         return $value;
     }
@@ -672,12 +675,13 @@ public function isMultiple(){
             
             // añado las columnas autodetectadas      
             $auto_columns= $this->getAutodetectedTemplateParameters($paths);
+            // dump($auto_columns);
             foreach($auto_columns as $key){
-                if(!in_array($key, array_keys($this->columns??[]))){
+                if(!in_array($key, $report_params) && !in_array($key, array_keys($this->columns??[]))){
                     $columns[$key] = ["type"=>"text", "label"=>$key ];
                 }
             }
-           
+        //    dump($columns);
             return $columns;
         }
         return [];
