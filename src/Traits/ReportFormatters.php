@@ -17,10 +17,10 @@ trait ReportFormatters
             }else {
                 try{
                     $date = new Carbon($value);
-                    dump($date->locale());
+                    // dump($date->locale());
                     return $date->translatedFormat($format);
                 }catch(Exception $e){
-                    dd($e);
+                    // dd($e);
                 }
             }
         }
