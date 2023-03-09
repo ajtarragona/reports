@@ -183,7 +183,7 @@ class ReportsService{
             $storageDestinationPath= storage_path(self::BASE_PATH);
             // dd($storageDestinationPath); 
             if (!$files->exists( $storageDestinationPath)) {
-                $files->makeDirectory($storageDestinationPath, 0755, true);
+                $files->makeDirectory($storageDestinationPath, 0775, true);
             }
             $zip->extractTo($storageDestinationPath);
             $zip->close();
