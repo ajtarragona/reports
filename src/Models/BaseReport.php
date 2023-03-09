@@ -710,7 +710,7 @@ public function isMultiple(){
                 $filePath     = $file->getRealPath();
         
                 // extracting filename with substr/strlen
-                $relativePath =   $this->getReportClassName() .''. DIRECTORY_SEPARATOR. substr($filePath, strlen($path) + 1);
+                $relativePath =   $this->getReportClassName() .'/'. substr($filePath, strlen($path) + 1);
         
                 $zip->addFile($filePath, $relativePath);
             }
