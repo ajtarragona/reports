@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
 use Faker\Factory as FakerFactory;
+use Illuminate\Filesystem\Filesystem;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Zip;
@@ -695,13 +696,19 @@ public function isMultiple(){
      * @return void
      */
     public function export(){
-        
-        $zip_file = $this->getReportClassName().'.zip'; // Name of our archive to download
+        $tmppath= storage_path('app'.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.'exported-reports');
+        $files=new Filesystem;
+        if (!$files->exists( $tmppath)) {
+            $files->makeDirectory($tmppath, 0775, true);
+        }
+        // dd($tmppath);
+        $zip_file = $tmppath.DIRECTORY_SEPARATOR.$this->getReportClassName().'.zip'; // Name of our archive to download
+        // dd($tmppath.DIRECTORY_SEPARATOR.$zip_file);
         $zip = new ZipArchive();
         $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $path=$this->getPath();
-        
+        // dd($path);
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
         foreach ($files as $name => $file)
         {
@@ -716,7 +723,7 @@ public function isMultiple(){
             }
         }
         $zip->close();
-
+// dd($zip);
         
         return response()->download($zip_file);
 

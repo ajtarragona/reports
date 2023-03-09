@@ -142,7 +142,11 @@ class ReportsService{
             return [];
         }else{
 
-            $storageDestinationPath= storage_path('app'.DIRECTORY_SEPARATOR.'tmp');
+            $storageDestinationPath= storage_path('app'.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.'imported-reports');
+            $files=new Filesystem;
+            if (!$files->exists( $storageDestinationPath)) {
+                $files->makeDirectory($storageDestinationPath, 0775, true);
+            }
             $zip->extractTo($storageDestinationPath);
             $zip->close();
             $config_path=$storageDestinationPath . DIRECTORY_SEPARATOR.basename($report_file->getClientOriginalName(), ".zip").DIRECTORY_SEPARATOR."config.php";
