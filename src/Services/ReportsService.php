@@ -4,9 +4,11 @@ namespace Ajtarragona\Reports\Services;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use ZipArchive;
 use File;
+use Storage;
 
 class ReportsService{
     
@@ -134,44 +136,97 @@ class ReportsService{
 
    
     
-
+    
+    /**
+     * getReportConfig
+     * Retorna el archivo de configuracion del report a partir del archivo uploadeado
+     *
+     * @param  mixed $report_file
+     * @return void
+     */
     public static function getReportConfig($report_file){
         $zip = new ZipArchive;
         $status = $zip->open($report_file->getRealPath());
+
         if ($status !== true) {
             return [];
         }else{
 
-            $storageDestinationPath= storage_path('app'.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.'imported-reports');
             $files=new Filesystem;
-            if (!$files->exists( $storageDestinationPath)) {
-                $files->makeDirectory($storageDestinationPath, 0775, true);
-            }
+            $storageDestinationPath = dirname($report_file->getRealPath()).DIRECTORY_SEPARATOR.Str::slug(basename($report_file->getClientOriginalName(), ".zip"), '_');
+
+            // dump($storageDestinationPath);
             $zip->extractTo($storageDestinationPath);
             $zip->close();
-            $config_path=$storageDestinationPath . DIRECTORY_SEPARATOR.basename($report_file->getClientOriginalName(), ".zip").DIRECTORY_SEPARATOR."config.php";
-            try{
-                return include $config_path;
-            }catch(Exception $e){
-                return [];
+            //entro en la carpeta generada, y cojo el nombre de la primera ( y única, carpeta )
+            $dir=Arr::first($files->directories($storageDestinationPath));
+
+            if($dir){
+                $config_path=$dir.DIRECTORY_SEPARATOR."config.php";
+                try{
+                    return include $config_path;
+                }catch(Exception $e){
+                    // dd($e);
+                    return [];
+                }
             }
+            return [];
         }
     }
 
+    
+    /**
+     * getReportClassName
+     * Retorna el nombre de clase del report a partir del zip uploadedado
+     *
+     * @param  mixed $report_file
+     * @return void
+     */
+    public static function getReportClassName($report_file){
+        $zip = new ZipArchive;
+        $status = $zip->open($report_file->getRealPath());
+
+        if ($status !== true) {
+            return null;
+        }else{
+
+            $files=new Filesystem;
+            $storageDestinationPath = dirname($report_file->getRealPath()).DIRECTORY_SEPARATOR.Str::slug(basename($report_file->getClientOriginalName(), ".zip"), '_');
+
+            // dump($storageDestinationPath);
+            $zip->extractTo($storageDestinationPath);
+            $zip->close();
+            //entro en la carpeta generada, y cojo el nombre de la primera ( y única, carpeta )
+            $dir=Arr::first($files->directories($storageDestinationPath));
+            
+            if($dir){
+                return basename($dir);
+            }
+            return null;
+        }
+    }
 
     public static function getReportShortName($report_file){
         $config= self::getReportConfig($report_file);
         return $config["short_name"] ?? null;
     }
 
-
+    
     public static function reportExists($report_file){
-        $name=basename($report_file->getClientOriginalName(), ".zip");
-        // dump($name);
+        $name=self::getReportClassName($report_file);
+        
+        // dd($name);
         $storageDestinationPath= storage_path(ReportsService::BASE_PATH);
         return File::exists( $storageDestinationPath.DIRECTORY_SEPARATOR.$name);
     }
 
+
+    public static function deleteReport($report_file){
+        $name=self::getReportClassName($report_file);
+        $path= storage_path(ReportsService::BASE_PATH).DIRECTORY_SEPARATOR.$name;
+        if(File::exists($path))
+        File::deleteDirectory($path);
+    }
 
     /** Uploadea un nuevo report */
     public static function uploadReport($report_file){

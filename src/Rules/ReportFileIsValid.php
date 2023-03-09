@@ -21,6 +21,7 @@ class ReportFileIsValid implements Rule
         //comprobar que es un zip
         //comprobar que existe el archivo de config
         $config=ReportsService::getReportConfig($value);
+        // dd($config);
         if(!$config) return false;
 
         //comprobar que existe short_name en el archivo config
