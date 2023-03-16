@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Str;
 use Faker\Factory as FakerFactory;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 if (! function_exists('tgn_reports')) {
 	function tgn_reports() {
@@ -13,6 +15,13 @@ if (! function_exists('c')) {
 	function c($name) {
         return "<code>{$name}</code>";
     }
+}
+
+if (! function_exists('is_collection')) {
+	function is_collection($obj){
+		return $obj && ($obj instanceof Collection || $obj instanceof EloquentCollection);
+
+	}
 }
 
 if (! function_exists('array_permutations')) {
