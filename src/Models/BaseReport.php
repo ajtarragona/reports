@@ -48,7 +48,7 @@ class BaseReport
     
     protected $engine = "dompdf";
 
-    protected $protected_tags = ["table_body","columns","rows","column_key","column_label","column_value", "loop","row"];
+    protected $protected_tags = ["table_body","num_rows","group_by","columns","rows","column_key","column_label","column_value", "loop","row"];
     protected  $autodetect_parameters=true;
     protected  $excluded_parameters=[];
     
@@ -433,7 +433,7 @@ public function isMultiple(){
             $args=[
                 "report"=>$this
             ];
-            $args=array_merge($args, $attributes);
+            $args=array_merge( $attributes, $args);
             return view($this->viewPath($viewname), $args);
            
         }

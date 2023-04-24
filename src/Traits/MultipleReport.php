@@ -51,8 +51,7 @@ trait MultipleReport
                     unset($group_row[$this->group_by]);
                 }
                 // dd($this->hide_grouped_column, $group_row);
-                $args=array_merge($parameters,$group_row,[
-                    'columns'=>$columns,
+                $args=array_merge($parameters,[
                     'row'=>$group_row,
                     'loop'=> to_object([
                         "index"=>$i+1,
@@ -60,7 +59,7 @@ trait MultipleReport
                         "first"=>$i==0,
                         "last"=> ($i== (count($this->rows)-1))
                     ])
-                ]);
+                ],$group_row);
                 
                 // dd($args);
                 $ret.=$this->view('row', $args )->render();
