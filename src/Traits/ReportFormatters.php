@@ -30,8 +30,8 @@ trait ReportFormatters
     public function formatMoney($value, $decimals=0, $coin="€"){
 		if(!$value) $value= 0;
        
-		// $num=number_format($value,$decimals,",",".");
-		$num=number_format($value,$decimals,".","");
+		$num=number_format($value,$decimals,",",".");
+		// $num=number_format($value,$decimals,".","");
     
 		//le quito los decimales a cero
 		$tmp=explode(",",$num);
