@@ -26,6 +26,25 @@ trait ReportFormatters
         }
         return $value;
     }
+
+    public function formatMoney($value, $decimals=0, $coin="€"){
+		if(!$value) $value= 0;
+       
+		// $num=number_format($value,$decimals,",",".");
+		$num=number_format($value,$decimals,".","");
+    
+		//le quito los decimales a cero
+		$tmp=explode(",",$num);
+		$ret=$tmp[0];
+
+		if(isset($tmp[1])){
+			$decimals=rtrim($tmp[1],"0");
+			if($decimals) $ret.=",".$decimals;
+		}
+		return $ret." ".$coin;
+
+		
+	}
     
     public function slugify($value){
         return Str::slug($value);

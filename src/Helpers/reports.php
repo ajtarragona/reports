@@ -68,7 +68,7 @@ if(!function_exists('apply_value')){
             
             $callable=substr($value,1);
             $expression='return $faker->'.$callable.';';
-
+// dd($expression);
             try{
                 $value = eval($expression);
             }catch(Exception $e){

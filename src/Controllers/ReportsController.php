@@ -81,6 +81,7 @@ class ReportsController extends Controller
 
         }
 
+        
         //prepare collection parameters
         if($collections){
             foreach($collections as $collection_name){
@@ -89,18 +90,19 @@ class ReportsController extends Controller
                 $numrows=$request->{$collection_name}["num_rows"];
                 $columns=$request->{$collection_name}["columns"];
                 if($numrows && $columns){
-                    $rows=[];
+                    $rows2=[];
                     for($i=0;$i<apply_value($numrows);$i++){
-                        $rows[]= array_map(function($value) use ($i){ 
+                        $rows2[]= array_map(function($value) use ($i){ 
                             return $value;// ." ". ($i+1);
                         }, $columns);
                     }
-                    $parameters[$collection_name] = $rows;
+                    $parameters[$collection_name] = $rows2;
                     
                 }
             }
         }
         // dd($parameters);
+        // dd($rows);
         if($request->regenerate_thumbnail) $report->generateThumbnail($parameters, $rows);
         return $report->stream($parameters, $rows);
         

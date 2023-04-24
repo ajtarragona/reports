@@ -35,6 +35,8 @@ class BaseReport
     
     public $pagination=true;
     public $multiple = false;
+    public $group_by;
+    public $hide_grouped_column=true;
     
    
     protected $entities=null;
@@ -46,7 +48,7 @@ class BaseReport
     
     protected $engine = "dompdf";
 
-    protected $protected_tags = ["num_rows","table_body","columns","rows","column_key","column_label","column_value", "loop","row"];
+    protected $protected_tags = ["table_body","columns","rows","column_key","column_label","column_value", "loop","row"];
     protected  $autodetect_parameters=true;
     protected  $excluded_parameters=[];
     
@@ -548,47 +550,61 @@ public function isMultiple(){
 
     private function prepareMultipleBody(&$parameters, $rows=null){
         $ret="";
-
+        // dd($rows);
         if($rows) $this->rows=$rows;
 
-        $num_rows=count($this->rows);
 
         $columns=$this->getColumnsNameCombo();
-// dd($columns);
-        $parameters= array_merge($parameters, compact('columns','num_rows'));
+        $group_by= $this->group_by;
 
+        $parameters= array_merge($parameters, compact('group_by','columns','rows'));
+
+        
         $ret.=$this->view('header', $parameters)->render();
+        
+        // dd($this->rows);
+        $rows=[];
 
         if($this->rows){
             // dd($function_cols);
+            //primero preparo los valores de las rows
             foreach($this->rows as $i=>$row){
-                 
                 $values=$this->getColumnsValues($row);
-                // dd($values);
-                $args=array_merge($parameters,$values,[
-                    'columns'=>$columns,
-                    'row'=>$values,
-                    'num_rows'=>$num_rows,
-                    'loop'=> to_object([
-                        "index"=>$i+1,
-                        "index_0"=>$i,
-                        "first"=>$i==0,
-                        "last"=> ($i== (count($this->rows)-1))
-                    ])
-                ]);
-
-                
-                // dd($args);
-                $ret.=$this->view('row', $args )->render();
-               
-                    
+                $rows[]=$values;
             }
+
+// dd($this->group_by);
+            if($this->group_by){
+                $ret.=$this->prepareGroupedMultipleBody($rows, $columns, $parameters);
+                
+            }else{
+
+                //creo las vistas de cada row
+                foreach($rows as $i=>$row){
+                    $args=array_merge($parameters,$row,[
+                        'row'=>$row,
+                        'loop'=> to_object([
+                            "index"=>$i+1,
+                            "index_0"=>$i,
+                            "first"=>$i==0,
+                            "last"=> ($i== (count($this->rows)-1))
+                        ])
+                    ]);
+
+                    
+                    // dd($args);
+                    $ret.=$this->view('row', $args )->render();
+                }
+            }
+
+            // dd($rows);
         }
+
 
         $ret.=$this->view('footer', $parameters )->render();
 
         $parameters["table_body"] = $ret;
-        
+        // dd($ret);
         // "<pre>".json_pretty($rows)."</pre>";
     }   
 

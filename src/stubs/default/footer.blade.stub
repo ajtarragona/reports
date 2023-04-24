@@ -2,5 +2,5 @@
 </table>
 
 <div class="mt-2 text-sm">
-    Total: {{ $num_rows }}
+    Total: {{ $rows ? count($rows) : 0 }}
 </div>
