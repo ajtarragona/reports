@@ -559,8 +559,13 @@ public function isMultiple(){
 
         $parameters= array_merge($parameters, compact('group_by','columns','rows'));
 
-        
-        $ret.=$this->view('header', $parameters)->render();
+        if(!$this->group_by) { //|| ($this->group_by && $this->viewExists('group_header')) ){
+            $ret.=$this->view('header', $parameters)->render();
+        }else{
+            //|| ($this->group_by && $this->viewExists('group_header')) ){
+           if($this->viewExists('main_header')) $ret.=$this->view('main_header', $parameters)->render();
+            
+        }
         
         // dd($this->rows);
         $rows=[];
@@ -576,7 +581,7 @@ public function isMultiple(){
 // dd($this->group_by);
             if($this->group_by){
                 $ret.=$this->prepareGroupedMultipleBody($rows, $columns, $parameters);
-                
+                // dd($ret);
             }else{
 
                 //creo las vistas de cada row
@@ -600,8 +605,13 @@ public function isMultiple(){
             // dd($rows);
         }
 
-
-        $ret.=$this->view('footer', $parameters )->render();
+        if(!$this->group_by){
+            $ret.=$this->view('footer', $parameters )->render();
+        }else{
+            //|| ($this->group_by && $this->viewExists('group_header')) ){
+           if($this->viewExists('main_footer')) $ret.=$this->view('main_footer', $parameters)->render();
+            
+        }
 
         $parameters["table_body"] = $ret;
         // dd($ret);

@@ -25,23 +25,25 @@ trait MultipleReport
             // dd($num_cols);
             
             if($this->viewExists('group_header')){
-                $ret.=$this->view('group_header', array_merge($parameters, ['group_rows'=>$group_rows, 'columns'=>$columns,'group_title'=>$group_title]) )->render();
+                $ret.=$this->view('group_header', array_merge($parameters, ['group_rows'=>$group_rows, 'rows'=>$group_rows, 'all_rows'=>$rows, 'columns'=>$columns,'group_title'=>$group_title]) )->render();
             }else{
-                $ret.="<tr>";
-                $ret.="    <th colspan='". count($columns)."' class='text-left'>";    
-                $ret.="       <div class='bg-gray-400'>".$group_title."</div>";
-                $ret.="    </th>";
-                $ret.="</tr>";
-                $ret.="<thead>";
-                $ret.="    <tr>";
-                if($columns){
-                    foreach($columns as $column_key=>$column_label){
-                            $ret.="    <th><div>".$column_label."</div></th>";
-                    }
-                }
+                $ret.="<h3>".$group_title."</h3>";
+                $ret.=$this->view('header', array_merge($parameters, ['group_rows'=>$group_rows, 'rows'=>$group_rows, 'all_rows'=>$rows, 'columns'=>$columns,'group_title'=>$group_title]) )->render();
+                // $ret.="<tr>";
+                // $ret.="    <th colspan='". count($columns)."' class='text-left'>";    
+                // $ret.="       <div class='bg-gray-400'>".$group_title."</div>";
+                // $ret.="    </th>";
+                // $ret.="</tr>";
+                // $ret.="<thead>";
+                // $ret.="    <tr>";
+                // if($columns){
+                //     foreach($columns as $column_key=>$column_label){
+                //             $ret.="    <th><div>".$column_label."</div></th>";
+                //     }
+                // }
                     
-                $ret.="    </tr>";
-                $ret.="</thead>";
+                // $ret.="    </tr>";
+                // $ret.="</thead>";
             }
 
            
@@ -66,10 +68,12 @@ trait MultipleReport
             }
 
             if($this->viewExists('group_footer')){
-                $ret.=$this->view('group_footer', array_merge($parameters, ['group_rows'=>$group_rows, 'columns'=>$columns,'group_title'=>$group_title]) )->render();
+                $ret.=$this->view('group_footer', array_merge($parameters, ['group_rows'=>$group_rows, 'rows'=>$group_rows,'all_rows'=>$rows,'columns'=>$columns,'group_title'=>$group_title]) )->render();
             }else{
-                $ret.="</table>";
-                $ret.='<table class="table table-striped fullwidth">';
+                $ret.=$this->view('footer', array_merge($parameters, ['group_rows'=>$group_rows,'rows'=>$group_rows,'all_rows'=>$rows, 'columns'=>$columns,'group_title'=>$group_title]) )->render();
+                
+                // $ret.="</table>";
+                // $ret.='<table class="table table-striped fullwidth">';
 
                 // $ret.="<tfoot>";
                 // $ret.="    <tr>";
