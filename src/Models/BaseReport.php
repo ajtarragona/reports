@@ -552,6 +552,7 @@ public function isMultiple(){
         $ret="";
         // dd($rows);
         if($rows) $this->rows=$rows;
+        $rows=$this->rows;
 
 
         $columns=$this->getColumnsNameCombo();
