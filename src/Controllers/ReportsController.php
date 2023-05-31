@@ -72,11 +72,26 @@ class ReportsController extends Controller
             // dd($request->all());
             $rows=[];
             if($request->num_rows){
+                // dump($request->columns);
                 for($i=0;$i<apply_value($request->num_rows);$i++){
                     $rows[]= array_map(function($value) use ($i){ 
-                        return $value;// ." ". ($i+1);
+                        if(is_array($value) && isset($value["columns"]) && $value["num_rows"]){
+                            //trato las colecciones multiples
+                            $ret=[];
+                            for($i=0;$i<apply_value($value["num_rows"]);$i++){
+                                $retrow=[];
+                                foreach($value["columns"] as $col_name=>$col_value){
+                                    $retrow[$col_name] = apply_value($col_value);
+                                }
+                                $ret[]=$retrow;
+                            }
+                            return $ret;
+                        }else{
+                            return $value;// ." ". ($i+1);
+                        }
                     }, $request->columns);
                 }
+                // dd($rows);
             }
 
         }

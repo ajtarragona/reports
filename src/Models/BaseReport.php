@@ -626,6 +626,7 @@ public function isMultiple(){
      */
     private function doGenerate($parameters=[], $rows=null){
  
+        if($rows) $this->rows=$rows;
         $parameters=$this->prepareParameters($parameters, false);
         // dd($parameters);
         
@@ -640,7 +641,7 @@ public function isMultiple(){
             return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
         
         }catch(Exception $e){
-            dd($e);
+            // dd($e);
         }
         
     }

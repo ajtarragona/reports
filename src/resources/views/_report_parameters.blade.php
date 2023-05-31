@@ -98,12 +98,12 @@
                     </li>
 
                     {{-- @dump($report->getColumns()) --}}
-                    @foreach($report->getColumns() as $column_key=>$column)
-                        @includeFirst(['tgn-reports::_report_parameter-'.$column["type"], 'tgn-reports::_report_parameter-text'],[
-                            'name'=>'columns['.$column_key.']',
-                            'options'=> $column["options"] ?? null,
-                            'value'=>$column["default_value"]??null,
-                            'label'=> $column["label"]
+                    @foreach($report->getColumns() as $parameter_name=>$parameter)
+                        @includeFirst(['tgn-reports::_report_parameter-'.$parameter["type"], 'tgn-reports::_report_parameter-text'],[
+                            'name'=>'columns['.$parameter_name.']',
+                            'options'=> $parameter["options"] ?? null,
+                            'value'=>$parameter["default_value"]??null,
+                            'label'=> $parameter["label"]
                         ])
                         
                         

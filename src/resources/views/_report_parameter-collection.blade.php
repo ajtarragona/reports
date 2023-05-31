@@ -1,3 +1,4 @@
+{{-- @dump($parameter) --}}
 @if(isset($parameter["columns"]))
     <li class="list-group-item ">
         <div class="d-flex justify-content-between align-items-center mb-2">
