@@ -24,6 +24,17 @@ if (! function_exists('is_collection')) {
 	}
 }
 
+
+if (! function_exists('is_assoc')) {
+
+	function is_assoc($array){
+		if(!$array) return false;
+		if(!is_array($array)) return false;
+		return !(array_values($array) === $array);
+
+	}
+}
+
 if (! function_exists('array_permutations')) {
     function array_permutations($items, $perms = [],&$ret = []) {
         // initialize by adding the empty set
