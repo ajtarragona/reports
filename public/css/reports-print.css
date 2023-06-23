@@ -8303,10 +8303,10 @@ table {
   border-collapse: collapse;
 }
 
-table thead td,
-table thead th,
-table tbody td,
-table tbody th {
+table > thead td,
+table > thead th,
+table > tbody td,
+table > tbody th {
   vertical-align: top;
 }
 
@@ -8315,7 +8315,7 @@ table.table {
   border-collapse: collapse;
 }
 
-table.table thead th {
+table.table > thead th {
   font-weight: bold;
   padding: 0px;
   border-top: 1px solid #ced4da;
@@ -8323,24 +8323,24 @@ table.table thead th {
   text-align: left;
 }
 
-table.table thead th > div {
+table.table > thead th > div {
   padding: 10px 8px;
 }
 
-table.table thead th,
-table.table tbody th {
+table.table > thead th,
+table.table > tbody th {
   background-color: #f7f7f9;
 }
 
-table.table tbody td,
-table.table tbody th {
+table.table > tbody td,
+table.table > tbody th {
   vertical-align: top;
   padding: 0px;
   border-bottom: 1px solid #ced4da;
 }
 
-table.table tbody td > div,
-table.table tbody th > div {
+table.table > tbody td > div,
+table.table > tbody th > div {
   padding: 10px 8px;
 }
 
@@ -8352,34 +8352,34 @@ table.table.table-compact > div {
   padding: 5px 5px;
 }
 
-table.table.table-display thead th {
+table.table.table-display > thead th {
   font-weight: bold;
   font-style: italic;
   border-top: 2px solid #333;
   border-bottom: 1px solid #ced4da;
 }
 
-table.table.table-display thead th {
+table.table.table-display > thead th {
   font-weight: bold;
   font-style: italic;
   border-top: 2px solid #333;
   border-bottom: 1px solid #ced4da;
 }
 
-table.table.table-display tbody th {
+table.table.table-display > tbody th {
   border-bottom: 1px solid #ced4da;
   font-weight: bold;
 }
 
-table.table.table-display tbody td {
+table.table.table-display > tbody td {
   border-bottom: 1px solid #ced4da;
 }
 
-table.table.table-display tbody td:last-child {
+table.table.table-display > tbody td:last-child {
   border-right-width: 0px;
 }
 
-table.table.table-display tbody td.title {
+table.table.table-display > tbody td.title {
   font-weight: bold;
 }
 
@@ -8387,41 +8387,41 @@ table.table.table-bordered {
   border: 1px solid #ced4da;
 }
 
-table.table.table-bordered thead th {
+table.table.table-bordered > thead th {
   font-weight: bold;
   font-style: italic;
   border-right: 1px solid #ced4da;
   border-bottom: 1px solid #ced4da;
 }
 
-table.table.table-bordered tbody th {
+table.table.table-bordered > tbody th {
   border-bottom: 1px solid #ced4da;
   border-right: 1px solid #ced4da;
   font-weight: bold;
 }
 
-table.table.table-bordered tbody td {
+table.table.table-bordered > tbody td {
   border-bottom: 1px solid #ced4da;
   border-right: 1px solid #ced4da;
 }
 
-table.table.table-bordered tbody td:last-child {
+table.table.table-bordered > tbody td:last-child {
   border-right-width: 0px;
 }
 
-table.table.table-bordered tbody td.title {
+table.table.table-bordered > tbody td.title {
   font-weight: bold;
 }
 
-table.table.table-striped tbody tr:nth-child(even) td,
-table.table.table-striped tbody tr:nth-child(even) th {
+table.table.table-striped > tbody tr:nth-child(even) td,
+table.table.table-striped > tbody tr:nth-child(even) th {
   background-color: #f7f7f9;
 }
 
-table.table.table-compact thead th > div,
-table.table.table-compact thead td > div,
-table.table.table-compact tbody td > div,
-table.table.table-compact tbody th > div {
+table.table.table-compact > thead th > div,
+table.table.table-compact > thead td > div,
+table.table.table-compact > tbody td > div,
+table.table.table-compact > tbody th > div {
   padding: 5px 5px;
 }
 
@@ -8431,8 +8431,10 @@ table.borderless {
   border-color: transparent !important;
 }
 
-table.borderless td,
-table.borderless th {
+table.borderless > thead td,
+table.borderless > thead th,
+table.borderless > tbody td,
+table.borderless > tbody th {
   border-width: 0px !important;
   border-style: none !important;
   border-color: transparent !important;

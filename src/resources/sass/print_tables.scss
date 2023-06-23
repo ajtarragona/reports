@@ -4,10 +4,10 @@ table{
 	font-size:$font-size-md;
 	border-spacing: 0;
     border-collapse: collapse;	
-	thead td,
-	thead th,
-	tbody td,
-	tbody th{
+	> thead td,
+	> thead th,
+	> tbody td,
+	> tbody th{
 		vertical-align:top;
 	}
 	
@@ -16,44 +16,44 @@ table{
 		border-spacing: 0;
 	    border-collapse: collapse;
 		
-		thead th{
+		> thead th{
 			font-weight: bold;
 			//font-size:10pt;
 			padding:0px;
 			border-top:1px solid $borders-color;
 			border-bottom:2px solid $borders-color;
 			text-align: left;
-			>div{
+			> div{
 				padding:10px 8px;
 			}
 		}
 
-		thead th,
-		tbody th{
-			background-color: $gray-200;
+		> thead th,
+		> tbody th{
+		 	background-color: $gray-200;
 				
 		}
 		
-		tbody td,
-		tbody th{
+		> tbody td,
+		> tbody th{
 			vertical-align:top;
 			padding:0px;
 			border-bottom:1px solid $borders-color;
 			
-			>div{
+			> div{
 				padding:10px 8px;
 			}
 		}
 
 		&.table-compact{
 			font-size:.9em;
-			>div{
+			> div{
 				padding:5px 5px;
 			}
 		}
 
 		&.table-display{
-			thead th{
+			> thead th{
 				font-weight: bold;
 				font-style:italic;
 				border-top:2px solid #333;
@@ -61,19 +61,19 @@ table{
 				
 			}
 			
-			thead th{
+			> thead th{
 				font-weight: bold;
 				font-style:italic;
 				border-top:2px solid #333;
 				border-bottom:1px solid $borders-color;
 			}
 
-			tbody th{
+			> tbody th{
 				border-bottom:1px solid $borders-color;
 				font-weight: bold;
 			}
 
-			tbody td{
+			> tbody td{
 				border-bottom:1px solid $borders-color;
 
 				&:last-child{
@@ -81,7 +81,7 @@ table{
 				}
 			}
 
-			tbody td.title{
+			> tbody td.title{
 				font-weight: bold;
 			}
 
@@ -89,7 +89,7 @@ table{
 		&.table-bordered{
 			border:1px solid $borders-color;
 
-			thead th{
+			> thead th{
 				font-weight: bold;
 				font-style:italic;
 				// border-top:1px solid #333;
@@ -97,13 +97,13 @@ table{
 				border-bottom:1px solid $borders-color;
 			}
 
-			tbody th{
+			> tbody th{
 				border-bottom:1px solid $borders-color;
 				border-right:1px solid $borders-color;
 				font-weight: bold;
 			}
 
-			tbody td{
+			> tbody td{
 				border-bottom:1px solid $borders-color;
 				border-right:1px solid $borders-color;
 
@@ -112,25 +112,25 @@ table{
 				}
 			}
 
-			tbody td.title{
+			> tbody td.title{
 				font-weight: bold;
 			}
 		}
 
 		&.table-striped{
-			tbody tr:nth-child(even) td,
-			tbody tr:nth-child(even) th
+			> tbody tr:nth-child(even) td,
+			> tbody tr:nth-child(even) th
 			{
 				background-color:$gray-200;
 			}
 		}
 
 		&.table-compact{
-			thead th,
-			thead td,
-			tbody td,
-			tbody th{
-				>div{
+			> thead th,
+			> thead td,
+			> tbody td,
+			> tbody th{
+				> div{
 					padding:5px 5px;
 				}
 			}
@@ -144,7 +144,10 @@ table{
 		border-width: 0px  !important; 
 		border-style: none !important;
 		border-color:transparent  !important;
-		td,th{
+		> thead td,
+		> thead th,
+		> tbody td,
+		> tbody th{
 			border-width: 0px  !important;
 			border-style: none  !important;
 			border-color:transparent  !important;
