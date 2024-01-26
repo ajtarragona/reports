@@ -347,7 +347,24 @@ public function isMultiple(){
         // $functions=[];
         /** inicializo los parametros que no tengan valor con un tag */
         foreach($parameters as $parameter_name=>$parameter){
-            if($parameter["type"]=="boolean"){
+            if($parameter["type"]=="image"){
+                $arrContextOptions=array(
+                    "ssl"=>array(
+                        "verify_peer"=>false,
+                        "verify_peer_name"=>false,
+                    ),
+                );  
+                $img_url=$values[$parameter_name];
+                
+                $file_content=file_get_contents($img_url,false, stream_context_create($arrContextOptions));
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_type = finfo_buffer($finfo, $file_content);
+                finfo_close($finfo);
+                // dd($mime_type);
+                // dd($content);
+                $ret[$parameter_name] = "data:".$mime_type.";base64,".base64_encode($file_content);
+
+            }elseif($parameter["type"]=="boolean"){
                 $ret[$parameter_name] = ($values[$parameter_name]??null) ? true: false;
             }elseif($parameter["type"]=="collection"){
                 $value=$values[$parameter_name]??null;

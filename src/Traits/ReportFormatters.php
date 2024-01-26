@@ -52,6 +52,13 @@ trait ReportFormatters
     }
 
     
+	public function upper($string){
+        return mb_strtoupper($string, 'UTF-8');
+	}
+
+	public function lower($string){
+        return mb_strtolower($string, 'UTF-8');
+    }
 
     public function renderTable($array, $attributes=[]){
 		// dump($array);

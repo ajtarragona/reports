@@ -77,6 +77,17 @@
     ]
 ];
 </code></pre>
+<h3>Imatges</h3>
+<p>Podem definir paràmetres de tipus imatge (<code>image</code>)</p>
+<p>S'hauria de passar la URL de la imatge (http o https) (una URL que sigui accessible des del servidor).</p>
+<pre class="bg-dark text-light p-3 rounded"><code>protected $parameters = [
+
+    "imatge" => [
+        "type"=>"image",
+        "label"=>"Imatge"
+    ]
+</code></pre>
+
 <h3>Paràmetres calculats</h3>
 <p>Quan definim un paràmetre, hi podem especificar una funció a través de la qual obtindrem el valor.</p>
 <p>Aquesta és una funció que estarà definida a la nostra classe. </p>
