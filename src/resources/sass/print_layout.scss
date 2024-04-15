@@ -28,6 +28,10 @@ body{
 	body.margin-#{$key} { 
 		margin: ($margin + $pdf-header-height ) $margin ($pdf-footer-height+$margin) $margin;  
 	}	
+	.template-clean body{
+		margin-top: $margin !important;
+		margin-bottom: $margin !important;
+	}
 }
 
 div,p,span,td,th{
