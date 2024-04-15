@@ -3,6 +3,7 @@
 return [
 	
 	"backend" => env('REPORTS_BACKEND',false),
+	"backend_password" => env('REPORTS_BACKEND_PASSWORD',"1234"),
 	/*
     |--------------------------------------------------------------------------
     | Stubs Path

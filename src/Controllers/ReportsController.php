@@ -9,6 +9,27 @@ use \Artisan;
 
 class ReportsController extends Controller
 {
+    public function login(){
+        return view("tgn-reports::pass");
+    }
+
+
+    public function dologin(Request $request){
+        if($request->password == config("reports.backend_password")){
+            session(['reports_login'=>"OK"]);
+            return redirect()->route('tgn-reports.home');
+        }else{
+            return redirect()->route('tgn-reports.login')->withErrors(["password" => "Wrong password"])->withInput();
+        }
+    }
+
+    
+    public function logout(){
+        session()->forget('reports_login');
+        return redirect()->route('tgn-reports.home');
+    }
+
+
     public function home($report_name=null, ReportsService $repo){
         Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
         

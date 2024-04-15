@@ -17,8 +17,15 @@ class ReportsBackend
     {
     	if (!config("reports.backend")) {
     		 abort(403, "Oops! Reports backend is disabled");
+        }else{
+            // dd(session()->has('reports_login'));
+            // dd(session()->has('reports_login'));
+            if(session()->has('reports_login')){
+                return $next($request);
+            }else{
+                return redirect()->route('tgn-reports.login');
+            }
         }
 
-        return $next($request);
     }
 }
