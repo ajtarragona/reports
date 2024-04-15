@@ -14,7 +14,7 @@
 </head>
 
 
-<body class="template-master margin-{{ $margin ?? 'lg' }} size-{{ $pagesize ?? 'A4' }} orientation-{{ $orientation ?? 'portrait' }}">
+<body class="template-clean margin-{{ $margin ?? 'lg' }} size-{{ $pagesize ?? 'A4' }} orientation-{{ $orientation ?? 'portrait' }}">
 	
 	<main>
 		@yield('body')
