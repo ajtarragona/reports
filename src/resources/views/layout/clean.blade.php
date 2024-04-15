@@ -16,9 +16,7 @@
 
 <body class="template-clean margin-{{ $margin ?? 'lg' }} size-{{ $pagesize ?? 'A4' }} orientation-{{ $orientation ?? 'portrait' }}">
 	
-	<main>
-		@yield('body')
-	</main>
+	@yield('body')
 	
 
 </body>
