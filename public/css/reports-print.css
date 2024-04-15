@@ -5297,7 +5297,7 @@ body.margin-0 {
   margin: 100px 0px 10px 0px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
@@ -5306,7 +5306,7 @@ body.margin-xs {
   margin: 105px 5px 15px 5px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 5px !important;
   margin-bottom: 5px !important;
 }
@@ -5315,7 +5315,7 @@ body.margin-sm {
   margin: 110px 10px 20px 10px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 10px !important;
   margin-bottom: 10px !important;
 }
@@ -5324,7 +5324,7 @@ body.margin-md {
   margin: 125px 25px 35px 25px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 25px !important;
   margin-bottom: 25px !important;
 }
@@ -5333,7 +5333,7 @@ body.margin-lg {
   margin: 150px 50px 60px 50px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 50px !important;
   margin-bottom: 50px !important;
 }
@@ -5342,7 +5342,7 @@ body.margin-xl {
   margin: 180px 80px 90px 80px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 80px !important;
   margin-bottom: 80px !important;
 }
@@ -5351,7 +5351,7 @@ body.margin-xxl {
   margin: 220px 120px 130px 120px;
 }
 
-.template-clean body {
+body.template-clean {
   margin-top: 120px !important;
   margin-bottom: 120px !important;
 }

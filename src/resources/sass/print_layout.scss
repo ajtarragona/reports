@@ -28,7 +28,7 @@ body{
 	body.margin-#{$key} { 
 		margin: ($margin + $pdf-header-height ) $margin ($pdf-footer-height+$margin) $margin;  
 	}	
-	.template-clean body{
+	body.template-clean{
 		margin-top: $margin !important;
 		margin-bottom: $margin !important;
 	}
