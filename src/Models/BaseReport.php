@@ -469,6 +469,18 @@ class BaseReport
         return $this->getPath().DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$asset_name;        
     }
     
+    public function image($asset_name){
+        $path=$this->asset($asset_name);
+        if(file_exists($path)){
+            $file_content=file_get_contents($path);
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = finfo_buffer($finfo, $file_content);
+            finfo_close($finfo);
+        // dd($mime_type);
+        // dd($content);
+            return "data:".$mime_type.";base64,".base64_encode($file_content);
+        }
+    }
 
     public function include($viewname, $attributes=[]){
         $view= $this->viewPath($viewname); 

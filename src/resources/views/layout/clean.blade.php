@@ -2,15 +2,16 @@
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	
+	
 	<style>
 		@php 
-			include public_path('vendor/ajtarragona/css/reports-print.css');
+		include public_path('vendor/ajtarragona/css/reports-print.css');
 			
 		@endphp
 		@yield('css')
-
+		
 	</style>
-
+	@yield('head')
 </head>
 
 

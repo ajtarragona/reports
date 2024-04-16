@@ -8,8 +8,9 @@
 			
 		@endphp
 		@yield('css')
-
+		
 	</style>
+	@yield('head')
 
 </head>
 
