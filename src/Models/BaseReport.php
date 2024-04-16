@@ -456,7 +456,19 @@ public function isMultiple(){
         }
     }
 
-  
+    public function asset($asset_name){
+        return $this->getPath().DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$asset_name;        
+    }
+
+    public function include($viewname, $attributes=[]){
+        $view= $this->viewPath($viewname); 
+        // dd($view);
+
+        // if($view){
+        //     return $view->render();     
+        // }
+    }
+
     
 
 
@@ -514,6 +526,9 @@ public function isMultiple(){
      * Streamea el archivo
      */
     public function stream($request=[], $rows=null){
+        // dd($this);
+        // dd($this->viewPath('assets/style.css'));
+        
         $pdf=$this->doGenerate($request, $rows);
         return $pdf->stream();
         
@@ -653,6 +668,8 @@ public function isMultiple(){
         // dd($template_name);
         PDF::setOptions(['isRemoteEnabled' => true]);
 
+        $parameters["report"]=$this;
+        // dd($parameters);
         try{
             
             return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
