@@ -69,14 +69,20 @@ class BaseReport
 
     }
 
-public function isMultiple(){
-    return $this->multiple;
-}
+    public function isMultiple(){
+        return $this->multiple;
+    }
     public function name(){
         return $this->config('name', $this->name);
     }
     public function icon(){
         return $this->config('icon', null);
+    }
+
+    public function getIcon(){
+        $icon=$this->icon();
+        $icon = $icon ? $icon : ($this->multiple?'bars':'file');
+        return $icon;
     }
 
     public function description(){
@@ -355,14 +361,17 @@ public function isMultiple(){
                     ),
                 );  
                 $img_url=$values[$parameter_name];
-                
-                $file_content=file_get_contents($img_url,false, stream_context_create($arrContextOptions));
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime_type = finfo_buffer($finfo, $file_content);
-                finfo_close($finfo);
+                if($img_url){
+                    $file_content=file_get_contents($img_url,false, stream_context_create($arrContextOptions));
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_type = finfo_buffer($finfo, $file_content);
+                    finfo_close($finfo);
                 // dd($mime_type);
                 // dd($content);
-                $ret[$parameter_name] = "data:".$mime_type.";base64,".base64_encode($file_content);
+                    $ret[$parameter_name] = "data:".$mime_type.";base64,".base64_encode($file_content);
+                }else{
+                    $ret[$parameter_name]=null;
+                }
 
             }elseif($parameter["type"]=="boolean"){
                 $ret[$parameter_name] = ($values[$parameter_name]??null) ? true: false;
@@ -459,6 +468,7 @@ public function isMultiple(){
     public function asset($asset_name){
         return $this->getPath().DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$asset_name;        
     }
+    
 
     public function include($viewname, $attributes=[]){
         $view= $this->viewPath($viewname); 
@@ -779,7 +789,7 @@ public function isMultiple(){
                 $filePath     = $file->getRealPath();
         
                 // extracting filename with substr/strlen
-                $relativePath =   $this->getReportClassName() .'/'. substr($filePath, strlen($path) + 1);
+                $relativePath =   $this->getReportClassName() .DIRECTORY_SEPARATOR. substr($filePath, strlen($path) + 1);
         
                 $zip->addFile($filePath, $relativePath);
             }
