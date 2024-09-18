@@ -30,7 +30,7 @@ class ReportsController extends Controller
     }
 
 
-    public function home($report_name=null, ReportsService $repo){
+    public function home(ReportsService $repo, $report_name=null){
         Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
         
         $reports=$repo->all();
@@ -55,7 +55,7 @@ class ReportsController extends Controller
 
     
 
-    public function thumbnail($report_name, Request $request, ReportsService $repo){
+    public function thumbnail(Request $request, ReportsService $repo, $report_name){
         $report=$repo->find($report_name);
         $path=$report->getThumbnail();
         
@@ -69,7 +69,7 @@ class ReportsController extends Controller
     }
 
     
-    public function generateThumbnail($report_name, Request $request, ReportsService $repo){
+    public function generateThumbnail(Request $request, ReportsService $repo, $report_name){
         $report=$repo->find($report_name);
         $report->generateThumbnail();
         return redirect()->back();
@@ -77,7 +77,7 @@ class ReportsController extends Controller
 
 
 
-    public function preview($report_name, Request $request, ReportsService $repo){
+    public function preview(Request $request, ReportsService $repo, $report_name){
         // dump($request->all());
         Artisan::call('vendor:publish',['--tag'=>'ajtarragona-reports-assets','--force'=>true]);
         $report=$repo->find($report_name);
@@ -146,7 +146,7 @@ class ReportsController extends Controller
     }
 
 
-    public function export($report_name, Request $request, ReportsService $repo){
+    public function export(Request $request, ReportsService $repo, $report_name){
 
         $report=$repo->find($report_name);
         return $report->export();

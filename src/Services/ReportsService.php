@@ -44,7 +44,7 @@ class ReportsService{
         $files = new Filesystem;
 
         // dump($this->config);
-        // dd(base_path(self::reportsBasePath()));
+        // dump(base_path(self::reportsBasePath()));
         $report_names=[];
         try{
             $report_names=$files->directories(base_path(self::reportsBasePath()));
@@ -56,11 +56,11 @@ class ReportsService{
         foreach($report_names as $report_name){
             $config_path=$report_name.DIRECTORY_SEPARATOR."config.php";
             // dd($files->exists());
-            // dd($config_path, $files->exists($config_path));
+            // dump($report_name, $config_path, $files->exists($config_path));
             if($files->exists($config_path)){
                 $config = include $config_path;
                 try{
-                    // dump($config['short_name']);
+                    // dump($report_name,$config);
                     $report=$this->find($config['short_name']);
                     // dd($report);
                     if($report){

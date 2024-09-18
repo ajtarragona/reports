@@ -108,6 +108,24 @@ class ReportsServiceProvider extends ServiceProvider
         
         
 
+        /** autoloader de las clases de los reports */
+        spl_autoload_register(function ($class) {
+            $prefix = 'Reports\\';
+            $baseDir = base_path('storage/app/report-templates/');
+
+            $len = strlen($prefix);
+            if (strncmp($prefix, $class, $len) !== 0) {
+                return;
+            }
+
+            $relativeClass = substr($class, $len);
+            $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+
+            if (file_exists($file)) {
+                require $file;
+            }
+        });
+
 
         //helpers
         foreach (glob(__DIR__.'/Helpers/*.php') as $filename){
