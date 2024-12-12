@@ -801,8 +801,8 @@ class BaseReport
                 $filePath     = $file->getRealPath();
         
                 // extracting filename with substr/strlen
-                $relativePath =   $this->getReportClassName() .DIRECTORY_SEPARATOR. substr($filePath, strlen($path) + 1);
-        
+                $relativePath =   $this->getReportClassName() .'/'. substr($filePath, strlen($path) + 1); //tiene que ser / 
+                
                 $zip->addFile($filePath, $relativePath);
             }
         }
