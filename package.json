@@ -20,7 +20,6 @@
     "jquery": "^3.2",
     "laravel-mix": "^4.0.14",
     "lodash": "^4.17.4",
-    "popper.js": "^1.12",
     "resolve-url-loader": "^2.3.1",
     "sass": "^1.17.0",
     "sass-loader": "^7.1.0",
@@ -28,6 +27,7 @@
     "vue-template-compiler": "^2.6.3"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3"
   }

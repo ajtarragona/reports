@@ -697,7 +697,7 @@ class BaseReport
             return PDF::loadView( $this->viewPath($this->templateName()), $parameters)->setPaper($this->pagesize, $this->orientation);
         
         }catch(Exception $e){
-            // dd($e);
+            dd($e);
         }
         
     }

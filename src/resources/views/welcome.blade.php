@@ -12,12 +12,12 @@
         
 
     </head>
-    <body class="h-100 overflow-hidden">
-        <div class="h-100">
+    <body class="vh-100 overflow-hidden">
+        <div class="vh-100">
 
-            <div class="row g-0 h-100">
+            <div class="row g-0 vh-100">
                 <div class="col-sm-2   " >
-                    <div class="h-100 border-end" style="overflow-y: auto">
+                    <div class="vh-100 border-end" style="overflow-y: auto">
                         
                         @if($reports->isNotEmpty())
                             <div class="list-group list-group-flush mt-3 ">

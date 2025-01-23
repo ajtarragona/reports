@@ -4,6 +4,9 @@ use Illuminate\Support\Str;
 use Faker\Factory as FakerFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Milon\Barcode\DNS1D;
+use Milon\Barcode\DNS2D;
+
 
 if (! function_exists('tgn_reports')) {
 	function tgn_reports() {
@@ -109,5 +112,35 @@ if (! function_exists('to_object')) {
 if (! function_exists('to_array')) {
 	function to_array($object) {
 	 	return json_decode(json_encode($object), true);
+	}
+}
+
+
+if (! function_exists('barcode')) {
+	function barcode($code, $type='C39', $options=[])  {
+        // return $code;
+        // dump($type);
+        if(in_array($type,['QRCODE','PDF417','DATAMATRIX'])){
+            $bc=new DNS2D();
+            $path=$bc->getBarcodePNG($code, $type, $options["pixel_w"]??3 , $options["pixel_h"]??3, $options["color"]??[0,0,0] ,$options["show_text"]??false);
+            // $path=$bc->getBarcodePNGPath($code, $type, $options["pixel_w"]??3 , $options["pixel_h"]??3, $options["color"]??[0,0,0] ,$options["show_text"]??false);
+        }else {
+            $bc=new DNS1D();
+            $path=$bc->getBarcodePNG($code, $type, $options["pixel_w"]??2 , $options["height"]??50, $options["color"]??[0,0,0] ,$options["show_text"]??false);
+            // $path=$bc->getBarcodePNGPath($code, $type, $options["pixel_w"]??2 , $options["pixel_h"]??50, $options["color"]??[0,0,0] ,$options["show_text"]??false);
+        }
+        // dd($bc);
+    //    echo public_path($path);
+
+        return  '<img src="data:image/jpeg;base64,' . $path. '" alt="barcode"  height="'.($options["height"]??'').'" width="'.($options["width"]??'').'"/>';
+
+    //    return "<img src='". public_path($path)."' alt='barcode'  height='".($options["height"]??'')."' width='".($options["width"]??'')."'/>";
+
+	}
+}
+
+if (! function_exists('qrcode')) {
+	function qrcode($code, $options=[])  {
+        return barcode($code, 'QRCODE', $options);
 	}
 }
