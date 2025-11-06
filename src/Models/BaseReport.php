@@ -57,6 +57,7 @@ class BaseReport
     protected $columns = [];
     protected $rows = [];
 
+    protected $rows_applied=false;
     
     public function __construct()
     {
@@ -592,8 +593,15 @@ class BaseReport
     }
 
     
-
     public function getRows(){
+        if(!$this->rows_applied){
+            foreach($this->rows as $i=>$row){
+                $values=$this->getColumnsValues($row);
+                // dd($values);
+                $this->rows[$i]=$values;
+            }
+            $this->rows_applied=true;
+        }
         return $this->rows;
     }
 
